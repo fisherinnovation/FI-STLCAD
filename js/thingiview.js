@@ -46,8 +46,8 @@ Thingiview = function(containerId) {
   	var isWebGl 			= false;
 
   	if (document.defaultView && document.defaultView.getComputedStyle) {
-    	var width  = parseFloat(document.defaultView.getComputedStyle(container,null).getPropertyValue('width'));
-    	var height = parseFloat(document.defaultView.getComputedStyle(container,null).getPropertyValue('height'));  
+    	var width  = parseFloat(document.defaultView.getComputedStyle(container, null).getPropertyValue('width'));
+    	var height = parseFloat(document.defaultView.getComputedStyle(container, null).getPropertyValue('height'));  
   	} else {
     	var width  = parseFloat(container.currentStyle.width);
     	var height = parseFloat(container.currentStyle.height);
@@ -72,14 +72,17 @@ Thingiview = function(containerId) {
 
   	this.initScene = function() {
     	container.style.position = 'relative';
-    	container.innerHTML      = '';
+    	container.innerHTML = '';
     
 	    var fov    = 45,
 	        aspect = width / height,
 	        near   = 10,
 	        far    = 100000;
         
+        // Camera
 	    camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+	    
+	    // Scene
 	  	scene  = new THREE.Scene();
 		
 		// Lighting
@@ -103,68 +106,60 @@ Thingiview = function(containerId) {
 	    pointLight.position.z = 0;
 	   	scene.add(pointLight);
 	
-	    if (showPlane) {
-	      loadPlaneGeometry();
-	    }
+		// Load plane (print bed)
+	    if (showPlane) loadPlaneGeometry();
 	    
 	    //this.setCameraView(cameraView);
 	    this.setObjectMaterial(objectMaterial);
 	
 	    testCanvas = document.createElement('canvas');
+	    
 	    try {
-	      if (testCanvas.getContext('experimental-webgl')) {
-	      	log("Passed WebGL detection!");
-	        // showPlane = false;
-	        isWebGl = true;
-	        renderer = new THREE.WebGLRenderer({antialias: true});
-	        renderer.gammaOutput = true;
-	        // renderer = new THREE.CanvasRenderer();
-	      } else {
-	        renderer = new THREE.CanvasRenderer();
-	        log("Failed WebGL detection!");
-	      }
+	    	if (testCanvas.getContext('experimental-webgl')) {
+	      		log("Passed WebGL detection!");
+	        	
+	        	// showPlane = false;
+	        	
+	        	isWebGl = true;
+	        	
+	        	renderer = new THREE.WebGLRenderer({antialias: true});
+	        	renderer.gammaOutput = true;
+	        	// renderer = new THREE.CanvasRenderer();
+	      	} else {
+	        	renderer = new THREE.CanvasRenderer();
+	        	log("Failed WebGL detection!");
+	      	}
 	    } catch(e) {
-	      renderer = new THREE.CanvasRenderer();
-	      log("Failed WebGL detection!");
+	      	renderer = new THREE.CanvasRenderer();
+	      	log("Failed WebGL detection!");
 	    }
 	
-	    // renderer.setSize(container.innerWidth, container.innerHeight);
-	
-	  	renderer.setSize(width, height);
+	    renderer.setSize(width, height);
 	    renderer.domElement.style.backgroundColor = backgroundColor;
 	  	container.appendChild(renderer.domElement);
 	
-		// FPS Stats
-	    statsFPS = new Stats();
-	    statsFPS.setMode(0);
-	    statsFPS.domElement.style.position  = 'absolute';
-	    statsFPS.domElement.style.top       = '0px';
-	    container.appendChild(statsFPS.domElement);
+		// Stats
+	    stats = new Stats();
+	    stats.setMode(0);
+	    stats.domElement.style.position  = 'absolute';
+	    stats.domElement.style.top       = '0px';
+	    container.appendChild(stats.domElement);
 	    
-	    // Milliseconds Stats
-	    statsMS = new Stats();
-	    statsMS.setMode(1);
-	    statsMS.domElement.style.position  = 'absolute';
-	    statsMS.domElement.style.top       = '0px';
-	    statsMS.domElement.style.left      = '80px';
-	    container.appendChild(statsMS.domElement);
-	
 	    // Controls
 	    controls = new THREE.ModelControls(camera, renderer.domElement);
 	    controls.zoomSpeed = 0.08;
 	    controls.dynamicDampingFactor = 0.40;
 	
+		// Use THREEx to monitor the window resize events and update the renderer
 		THREEx.WindowResize(renderer, camera);
 	
 	    // Render Scene
 	    setInterval( function () {
-		    statsFPS.begin();
-		    statsMS.begin();
+		    stats.begin();
 		    
-			sceneLoop();
+			sceneLoop(); // Loop scene
 			
-			statsMS.end();
-		    statsFPS.end();
+			stats.end();
 		}, 1000 / 60 );
 	}
 
@@ -481,8 +476,8 @@ Thingiview = function(containerId) {
 	
 	      	object = new THREE.Mesh(geometry, material);
 	  		scene.add(object);
-	
-	      	if (objectMaterial != 'wireframe') {
+	  		
+	       	if (objectMaterial != 'wireframe') {
 	       	 	object.overdraw = true;
 	        	object.doubleSided = true;
 	      	}
