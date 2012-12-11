@@ -55,21 +55,56 @@
 		<ul id="file-list"></ul>
 	</div>
 	
-	<div id="thingiverse-load">
+	<div id="stl-load">
 		<fieldset>
-	    <legend>Load Thingiverse Model</legend>
-	    <label>Model URL</label>
-	    <input id="thingiverse-url" type="text" placeholder="http://www.thingiverse.com/thing:34816">
-	    <span class="help-block">Enter a full url or model ID from Thingiverse to load model into viewer.</span>
+		    <legend>Load STL</legend>
+		    <label>STL URL</label>
+		    <input id="stl-url" type="text" placeholder="http://thingiverse-production.s3.amazonaws.com/assets/1c/fc/b6/e8/59/snowflake.stl">
+		    <span class="help-block">Enter a full url to a STL file hosted on the web.</span>
 	  </fieldset>
 	</div>
 	
-	<div id="stl-load">
+	<div id="gcode-options">
 		<fieldset>
-	    <legend>Load STL</legend>
-	    <label>STL URL</label>
-	    <input id="stl-url" type="text" placeholder="http://thingiverse-production.s3.amazonaws.com/assets/1c/fc/b6/e8/59/snowflake.stl">
-	    <span class="help-block">Enter a full url to a STL file hosted on the web.</span>
+		    <legend>GCode Export Configuration</legend>
+		    <span class="help-block">Leave field blank to use default values.</span>
+		    
+		    <label class="checkbox">
+		      <input type="checkbox"> Add Raft
+		    </label>
+		    
+		     <label class="checkbox">
+		      <input type="checkbox"> Add Supports
+		    </label>
+		    
+		    <div class="left">
+			    <label>Infill (%)</label>
+			    <input id="stl-url" type="text" placeholder="10">
+			    
+			    <label>Number of Shells</label>
+			    <input id="stl-url" type="text" placeholder="2">
+			    
+			    <label>Layer Height</label>
+			    <input id="stl-url" type="text" placeholder="0.27">
+			    
+			    <label>Extruder Temperautre (&deg;C)</label>
+			    <input id="stl-url" type="text" placeholder="230">
+		    </div>
+		    
+		    <div class="right">
+			    <label>Platform</label>
+			    <input id="stl-url" type="text" placeholder="110">
+			    
+			    <label>Extruding Speed</label>
+			    <input id="stl-url" type="text" placeholder="80">
+			    
+			    <label>Traveling Speed</label>
+			    <input id="stl-url" type="text" placeholder="100">
+		    </div>
+		    
+		    <div class="clearfix"></div>
+		    
+		    <a class="btn btn-warning" id="">SLICE</a>
 	  </fieldset>
 	</div>
 

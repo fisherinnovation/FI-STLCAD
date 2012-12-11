@@ -1,6 +1,7 @@
 $(document).ready(init);
 
-var thingiverseLoadDialog = false;
+var stlLoadDialog = false;
+var generateGCodeDialog = false;
 var fileListURL = 'php/files.php';
 var filesJSON;
 var fileListOpen = false;
@@ -35,16 +36,18 @@ function init() {
       	}
     }); 
   	
+  	// UI Click Events
   	$('#viewer').bind('click', onViewerClick);
-  	
-  	$('#controls #nav-thingiverse-load').bind('click', onNavThingiverseLoadButtonClick);
   	$('#controls #nav-stl-load').bind('click', onNavSTLLoadButtonClick);
   	$('#controls .rotation-button').bind('click', onControlsRotationButtonClick);
-  	
-  	$('#thingiverse-load').bind('keydown', onThingiverseURLKeyDown);
   	$('#stl-load').bind('keydown', onSTLURLKeyDown); 
-  	
+  	$('#nav-generate-gcode').bind('click', onGenerateGCodeButtonClick);
   	$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
+}
+
+function onGenerateGCodeButtonClick(e) {
+	generateGCodeDialog = true;
+	$('#gcode-options').fadeIn(250);
 }
 
 function onControlsRotationButtonClick(e) {
@@ -150,18 +153,6 @@ function onLoadSTLFromListButtonClick(e) {
 	loadFileList();
 }
 
-function onThingiverseURLKeyDown(e) {
-	url = $('#thingiverse-url').val();
-	
-	if(e.which == 13) {
-		if(validateURL(url)) {
-			loadThingiverseURL(url);
-		} else {
-			// do something
-		}
-	}
-}
-
 function onSTLURLKeyDown(e) {
 	url = $('#stl-url').val();
 	
@@ -184,7 +175,7 @@ function loadThingiverseURL(url) {
 	modelID = modelID[modelID.length - 1];
 	
 	thingiview.loadJSON("../php/json.php?file=http://thingiverse.com/download:" + modelID);
-	thingiverseLoadDialog = false;
+	stlLoadDialog = false;
 	$('#thingiverse-load').hide();
 }
 
@@ -192,32 +183,24 @@ function loadSTLURL(url) {
 	console.log('Loading Model: ' + url);
 	
 	thingiview.loadJSON("../php/json.php?file=" + url);
-	thingiverseLoadDialog = false;
+	stlLoadDialog = false;
 	$('#stl-load').hide();
 }
 
 function onControlsClick(e) {
-	if(thingiverseLoadDialog) $('#thingiverse-load').hide();
+	if(stlLoadDialog) $('#thingiverse-load').hide();
 }
 
 function onViewerClick(e) {
-	if(thingiverseLoadDialog) $('#thingiverse-load').hide();
-	if(thingiverseLoadDialog) $('#stl-load').hide();
+	if(generateGCodeDialog) $('#gcode-options').fadeOut(250);
+	if(stlLoadDialog) $('#stl-load').fadeOut(250);
 }
 
 function onNavSTLLoadButtonClick(e) {
-	thingiverseLoadDialog = true;
-	$('#stl-load').show(); 
-}
-function onNavThingiverseLoadButtonClick(e) {
-	thingiverseLoadDialog = true;
-	$('#thingiverse-load').show(); 
+	stlLoadDialog = true;
+	$('#stl-load').fadeIn(250); 
 }
 
-
-/**
- * 
- */
 function loadDefaultModel() {
 	thingiview = new Thingiview("viewer");
   	thingiview.setObjectColor('#C0D8F0');
