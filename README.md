@@ -1,7 +1,20 @@
 FI-STLCAD
 =========
 
-Fisher Innovation STL model preparation and slicing application.
+Fisher Innovation STLCAD is a model preparation and slicing application for use when preapring 3D models for output on a 3D printer.
+
+![Settings Window](https://raw.github.com/fisherinnovation/FI-STLCAD/master/docs/images/screenshot.png)
+
+# Features
+* Load STL from local source, web, or Thingiverse page.
+* Converts STL data to JSON for quick loading.
+* View STL as 3D model on build plate.
+* Download STL files
+* Convert STL to GCODE
+
+# Requirments
+* PHP
+* Skeinforge (packaged in repo)
 
 # References
 ## STL (Standard Tessellation Language)
