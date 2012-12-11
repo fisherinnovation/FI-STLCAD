@@ -395,7 +395,7 @@ Thingiview = function(containerId) {
 
     scope.setRotation(rotate);
   	
-    var worker = new WorkerFacade('javascripts/thingiloader.js');
+    var worker = new WorkerFacade('js/thingiloader.js');
     
     worker.onmessage = function(event) {
       if (event.data.status == "complete") {
@@ -627,7 +627,7 @@ if(!!window.Worker){
             document.body.appendChild(scr);
             
             var binaryscr = document.createElement("SCRIPT");
-            binaryscr.src = 'javascripts/binaryReader.js';
+            binaryscr.src = 'js/binaryReader.js';
             binaryscr.type = "text/javascript";
             document.body.appendChild(binaryscr);
             
