@@ -1,24 +1,24 @@
 Thingiview = function(containerId) {
 	scope = this;
   
-  	this.containerId  				= containerId;
-  	var container     				= document.getElementById(containerId);
-  	var camera   					= null;
-	var scene    					= null;
-  	var renderer 					= null;
-  	var object   					= null;
-  	var plane    					= null;
-  	var controls 					= null;
-  	var ambientLight    			= null;
-  	var frontLight     				= null;
-  	var backLight        			= null;
-  	var targetXRotation             = 0;
-  	var targetXRotationOnMouseDown  = 0;
-  	var mouseX                      = 0;
-  	var mouseXOnMouseDown           = 0;
-  	var mouseXpan                   = 0;
-  	var mouseYpan                   = 0;
-  	var mouseDownRightButton        = false;
+  	this.containerId = containerId;
+  	var container					= document.getElementById(containerId);
+  	var camera						= null;
+	var scene						= null;
+  	var renderer					= null;
+  	var object						= null;
+  	var plane						= null;
+  	var controls					= null;
+  	var ambientLight				= null;
+  	var frontLight					= null;
+  	var backLight		 			= null;
+  	var targetXRotation				= 0;
+  	var targetXRotationOnMouseDown	= 0;
+  	var mouseX						= 0;
+  	var mouseXOnMouseDown			= 0;
+  	var mouseXpan					= 0;
+  	var mouseYpan					= 0;
+  	var mouseDownRightButton		= false;
   	var targetYRotation             = 0;
   	var targetYRotationOnMouseDown  = 0;
   	var mouseY                      = 0;
@@ -89,34 +89,6 @@ Thingiview = function(containerId) {
 	    pointLight.position.z = 0;
 	   	scene.add(pointLight);
 	
-	    //progressBar = $('#GCodeStatusDiv');
-    
-	    // document.createElement('div');
-	    //     progressBar.style.position = 'absolute';
-	    //     progressBar.style.top = '0px';
-	    //     progressBar.style.left = '0px';
-	    //     progressBar.style.backgroundColor = 'red';
-	    //     progressBar.style.padding = '5px';
-	    //     progressBar.style.display = 'none';
-	    //     progressBar.style.overflow = 'visible';
-	    //     progressBar.style.whiteSpace = 'nowrap';
-	    //     progressBar.style.zIndex = 100;
-	    //     container.appendChild(progressBar);
-	         
-	    //alertBox = $('#GCodeErrorDiv');
-	    // alertBox.id = 'alertBox';
-	    //     alertBox.style.position = 'absolute';
-	    //     alertBox.style.top = '25%';
-	    //     alertBox.style.left = '25%';
-	    //     alertBox.style.width = '50%';
-	    //     alertBox.style.height = '50%';
-	    //     alertBox.style.backgroundColor = '#dddddd';
-	    //     alertBox.style.padding = '10px';
-	    //     // alertBox.style.overflowY = 'scroll';
-	    //     alertBox.style.display = 'none';
-	    //     alertBox.style.zIndex = 100;
-	    //     container.appendChild(alertBox);
-	    
 	    if (showPlane) {
 	      loadPlaneGeometry();
 	    }
@@ -127,6 +99,7 @@ Thingiview = function(containerId) {
 	    testCanvas = document.createElement('canvas');
 	    try {
 	      if (testCanvas.getContext('experimental-webgl')) {
+	      	log("Passed WebGL detection!");
 	        // showPlane = false;
 	        isWebGl = true;
 	        renderer = new THREE.WebGLRenderer({antialias: true});
@@ -134,10 +107,11 @@ Thingiview = function(containerId) {
 	        // renderer = new THREE.CanvasRenderer();
 	      } else {
 	        renderer = new THREE.CanvasRenderer();
+	        log("Failed WebGL detection!");
 	      }
 	    } catch(e) {
 	      renderer = new THREE.CanvasRenderer();
-	      // log("failed webgl detection");
+	      log("Failed WebGL detection!");
 	    }
 	
 	    // renderer.setSize(container.innerWidth, container.innerHeight);
@@ -146,40 +120,39 @@ Thingiview = function(containerId) {
 	    renderer.domElement.style.backgroundColor = backgroundColor;
 	  	container.appendChild(renderer.domElement);
 	
-	    // stats = new Stats();
-	    // stats.domElement.style.position  = 'absolute';
-	    // stats.domElement.style.top       = '0px';
-	    // container.appendChild(stats.domElement);
+		// FPS Stats
+	    statsFPS = new Stats();
+	    statsFPS.setMode(0);
+	    statsFPS.domElement.style.position  = 'absolute';
+	    statsFPS.domElement.style.top       = '0px';
+	    container.appendChild(statsFPS.domElement);
+	    
+	    // Milliseconds Stats
+	    statsMS = new Stats();
+	    statsMS.setMode(1);
+	    statsMS.domElement.style.position  = 'absolute';
+	    statsMS.domElement.style.top       = '0px';
+	    statsMS.domElement.style.left      = '80px';
+	    container.appendChild(statsMS.domElement);
 	
-	    //these are our controls.
+	    // Controls
 	    controls = new THREE.ModelControls(camera, renderer.domElement);
 	    controls.zoomSpeed = 0.08;
 	    controls.dynamicDampingFactor = 0.40;
 	
 		THREEx.WindowResize(renderer, camera);
 	
-	    //start our renderer.
-	    sceneLoop();
-
-	    /*
-	    //Replaced with ModelControl class
-	    // renderer.domElement.addEventListener('mousemove',      onRendererMouseMove,     false);    
-	  	window.addEventListener('mousemove',      onRendererMouseMove,     false);    
-	    renderer.domElement.addEventListener('mouseover',      onRendererMouseOver,     false);
-	    renderer.domElement.addEventListener('mouseout',       onRendererMouseOut,      false);
-	  	renderer.domElement.addEventListener('mousedown',      onRendererMouseDown,     false);
-	    // renderer.domElement.addEventListener('mouseup',        onRendererMouseUp,       false);
-	    window.addEventListener('mouseup',        onRendererMouseUp,       false);
-	
-	  	renderer.domElement.addEventListener('touchstart',     onRendererTouchStart,    false);
-	  	renderer.domElement.addEventListener('touchend',       onRendererTouchEnd,      false);
-	  	renderer.domElement.addEventListener('touchmove',      onRendererTouchMove,     false);
-	
-	    renderer.domElement.addEventListener('DOMMouseScroll', onRendererScroll,        false);
-	  	renderer.domElement.addEventListener('mousewheel',     onRendererScroll,        false);
-	  	renderer.domElement.addEventListener('gesturechange',  onRendererGestureChange, false);
-	  	*/
-  	}
+	    // Render Scene
+	    setInterval( function () {
+		    statsFPS.begin();
+		    statsMS.begin();
+		    
+			sceneLoop();
+			
+			statsMS.end();
+		    statsFPS.end();
+		}, 1000 / 60 );
+	}
 
   
   	function sceneLoop() {
@@ -194,7 +167,7 @@ Thingiview = function(containerId) {
 	    	renderer.render(scene, camera);
         }
 
-    	requestAnimationFrame(sceneLoop); // And repeat...
+    	//requestAnimationFrame(sceneLoop); // And repeat...
   	}
 
   
@@ -376,20 +349,14 @@ Thingiview = function(containerId) {
   }
 
   this.loadArray = function(array) {
-    log("loading array...");
+    log("Loading JSON STL data...");
     geometry = new STLGeometry(array);
     loadObjectGeometry();
     
     scope.setRotation(rotate);
     scope.centerCamera();
-    log("finished loading " + geometry.faces.length + " faces.");
+    log("Finished loading " + geometry.faces.length + " faces from STL model.");
   }
-
-  //this.progressBarMessage = function(msg){
-    //progressBar.style.display = 'block';
-    //progressBar.html(msg);
-    //progressBar.show();
-  //}
 
   this.newWorker = function(cmd, param) {
 
@@ -399,23 +366,15 @@ Thingiview = function(containerId) {
     
     worker.onmessage = function(event) {
       if (event.data.status == "complete") {
-        //progressBar.html('Initializing geometry...');
-        //progressBar.show();
         // scene.removeObject(object);
         geometry = new STLGeometry(event.data.content);
         loadObjectGeometry();
-        //progressBar.html();
-        //progressBar.hide();
-
         scope.setRotation(rotate);
 
         log("finished loading " + geometry.faces.length + " faces.");
         //thingiview.setCameraView(cameraView);
         scope.centerCamera();
       } else if (event.data.status == "complete_points") {
-        //progressBar.html('Initializing points...');
-        //progressBar.show();
-
         geometry = new THREE.Geometry();
 
         var material = new THREE.ParticleBasicMaterial( { color: 0xff0000, opacity: 1 } );
@@ -439,24 +398,14 @@ Thingiview = function(containerId) {
         controls.update();
         renderer.render(scene, camera);
         
-        //progressBar.html();
-        //progressBar.hide();
-        
         scope.setRotation(false);
         //scope.setRotation(true);
-        log("finished loading " + event.data.content[0].length + " points.");
+        log("Finished loading " + event.data.content[0].length + " points.");
         // scope.centerCamera();
       } else if (event.data.status == "progress") {
-        //progressBar.style.display = 'block';
-        //progressBar.style.width = event.data.content;
-        // log(event.data.content);
-        //progressBar.html("Progress: " + event.data.content)
-        //progressBar.show();
+        log(event.data.content);
       } else if (event.data.status == "message") {
-        //progressBar.style.display = 'block';
-        //progressBar.html(event.data.content);
-        //progressBar.show();
-        // log(event.data.content);
+        log(event.data.content);
       } else if (event.data.status == "alert") {
         scope.displayAlert(event.data.content);
       } else {
