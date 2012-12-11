@@ -17,9 +17,9 @@
   	<script type="text/javascript" src="js/bootstrap.min.js"></script>
   	<script type="text/javascript" src="javascripts/Three-51.js"></script>
   	<script type="text/javascript" src="javascripts/THREEx.WindowResize.js"></script>
-  	<script type="text/javascript" src="javascripts/plane-v2.js"></script>
+  	<script type="text/javascript" src="javascripts/plane.js"></script>
   	<script type="text/javascript" src="javascripts/model-controls.js"></script>
-  	<script type="text/javascript" src="javascripts/thingiview-v2.js"></script>
+  	<script type="text/javascript" src="javascripts/thingiview.js"></script>
   	<script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
@@ -36,24 +36,18 @@
 		<a class="rotation-button btn btn-inverse">ROTATION OFF</a>
 		
 		<a class="btn btn-inverse" onclick="thingiview.setObjectMaterial('wireframe');">WIREFRAME</a> 
-		  	<a class="btn btn-inverse" onclick="thingiview.setObjectMaterial('solid');">SOLID</a>
+		<a class="btn btn-inverse" onclick="thingiview.setObjectMaterial('solid');">SOLID</a>
 		  
-		  	<div style="float:right;padding-right:30px;">
-			  	<a class="btn btn-inverse" id="nav-stl-load">LOAD MODEL</a>
-			  	<!--<a class="btn btn-inverse" id="nav-thingiverse-load">LOAD THINGIVERSE MODEL</a>-->
-			  	<a class="btn btn-success" id="nav-download-stl">DOWNLOAD STL</a>
-			  	<a class="btn btn-warning" id="nav-generate-gcode">GENERATE GCODE</a>
-			</div>
-		<!--
-		<p>
-		  Plane: <a href="#" onclick="thingiview.setShowPlane(false)">Hide</a> | <a href="#" onclick="thingiview.setShowPlane(true)">Show</a><br/>
-		  Background Color: <a href="#" onclick="thingiview.setBackgroundColor('#606060')">Gray</a> | <a href="#" onclick="thingiview.setBackgroundColor('#ffffff')">White</a> | <a href="#" onclick="thingiview.setBackgroundColor('#000000')">Black</a><br/>
-		  Object Color: <a href="#" onclick="thingiview.setObjectColor('#ffffff')">White</a> | <a href="#" onclick="thingiview.setObjectColor('#aa0000')">Red</a> | <a href="#" onclick="thingiview.setObjectColor('#CDFECD')">Green</a> | <a href="#" onclick="thingiview.setObjectColor('#C0D8F0')">Blue</a><br/>
-		</p>
-		-->
+		<div style="float:right;padding-right:30px;">
+			<a class="btn btn-inverse" id="nav-stl-load">LOAD MODEL</a>
+			<a class="btn btn-success" id="nav-download-stl">DOWNLOAD STL</a>
+			<a class="btn btn-warning" id="nav-generate-gcode">GENERATE GCODE</a>
+		</div>
 	</div>
 	
 	<div id="viewer"></div>
+	
+	<div id="GCodeStatusDiv"></div>
 	
 	<div id="file-selector">
 		<h1>Model Archive</h1>

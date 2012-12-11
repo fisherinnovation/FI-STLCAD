@@ -166,12 +166,9 @@ function onSTLURLKeyDown(e) {
 	url = $('#stl-url').val();
 	
 	if(e.which == 13) {
-		//if(validateURL(url)) {
-			console.log('got here');
+		if(validateURL(url)) {
 			loadSTLURL(url);
-		//} else {
-			// do something
-		//}
+		}
 	}
 }
 
