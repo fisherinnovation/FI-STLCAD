@@ -23,5 +23,6 @@ Fisher Innovation STLCAD is a model preparation and slicing application for use 
 # Notes
 Built with the help of the following great open source projects,
 * Skeinforge http://fabmetheus.crsndoo.com/
+* Bootstrap https://github.com/twitter/bootstrap
 * GCode Viewer https://github.com/joewalnes/gcode-viewer
 * Thingiview.js https://github.com/tbuser/thingiview.js
