@@ -429,10 +429,16 @@ Thingiview = function(containerId) {
     // log(msg);
   //}
 
-  function loadPlaneGeometry() {
-    plane = new Grid(200, 200, 10, new THREE.LineBasicMaterial({color:0x111111,linewidth:1}));
-    scene.add(plane);
-  }
+	
+	/**
+	 * Creates the plane aka. the print bed.
+	 * 
+	 * Note: 600px x 600px = 8"x8"
+	 */
+  	function loadPlaneGeometry() {
+  		plane = new Grid(600, 600, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
+    	scene.add(plane);
+  	}
 
   function loadObjectGeometry() {
     if (scene && geometry) {
