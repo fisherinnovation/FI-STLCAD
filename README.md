@@ -3,6 +3,10 @@ FI-STLCAD
 
 Fisher Innovation STL model preparation and slicing application.
 
+# References
+## STL (Standard Tessellation Language)
+* http://en.wikipedia.org/wiki/STL_(file_format)
+
 # Notes
 Built with the help of the following great open source projects,
 * Skeinforge http://fabmetheus.crsndoo.com/
