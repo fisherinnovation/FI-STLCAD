@@ -11,7 +11,7 @@ function createObjectFromGCode(gcode) {
  	var bbbox = { min: { x:100000,y:100000,z:100000 }, max: { x:-100000,y:-100000,z:-100000 } };
  	
  	function newLayer(line) {
- 		layer = { type: {}, layer: layers.count(), z: line.z, };
+ 		layer = { type: {}, layer:layers.length, z: line.z, };
  		layers.push(layer);
  	}
  	function getLineGroup(line) {
@@ -42,12 +42,13 @@ function createObjectFromGCode(gcode) {
 		var geometry = group.geometry;
 		
 		group.segmentCount++;
-        geometry.vertices.push(new THREE.Vertex(
-            new THREE.Vector3(p1.x, p1.y, p1.z)));
-        geometry.vertices.push(new THREE.Vertex(
-            new THREE.Vector3(p2.x, p2.y, p2.z)));
+        geometry.vertices.push(new THREE.Vector3(new THREE.Vector3(p1.x, p1.y, p1.z)));
+        geometry.vertices.push(new THREE.Vector3(new THREE.Vector3(p2.x, p2.y, p2.z)));
+        //geometry.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z));
+        //geometry.vertices.push(new THREE.Vector3(p2.x, p2.y, p2.z));
         geometry.colors.push(group.color);
         geometry.colors.push(group.color);
+        
         if (p2.extruding) {
 			bbbox.min.x = Math.min(bbbox.min.x, p2.x);
 			bbbox.min.y = Math.min(bbbox.min.y, p2.y);
@@ -162,7 +163,7 @@ function createObjectFromGCode(gcode) {
 
   parser.parse(gcode);
 
-	console.log("Layer Count ", layers.count());
+	//console.log("Layer Count ", layers.count());
 
   var object = new THREE.Object3D();
 	

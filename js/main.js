@@ -43,6 +43,35 @@ function init() {
   	$('#stl-load').bind('keydown', onSTLURLKeyDown); 
   	$('#nav-generate-gcode').bind('click', onGenerateGCodeButtonClick);
   	$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
+  	
+  	
+  	
+  	// Drop files from desktop onto main page to import them.
+  	$('body').on('dragover', function(event) {
+    	event.stopPropagation();
+    	event.preventDefault();
+    	event.originalEvent.dataTransfer.dropEffect = 'copy'
+  	}).on('drop', function(event) {
+    	event.stopPropagation();
+    	event.preventDefault();
+    	var files = event.originalEvent.dataTransfer.files;
+    
+    	if (files.length > 0) {
+      		var reader = new FileReader();
+      		reader.onload = function() {
+        		openGCodeFromText(reader.result);
+      		};
+      
+      		reader.readAsText(files[0]);
+    	}
+  	});
+}
+
+
+function openGCodeFromText(gCode) {
+  	object = createObjectFromGCode(gCode);
+  	thingiview.removeObject();
+  	thingiview.addObject(new THREE.Mesh(object, new THREE.MeshBasicMaterial({color:'0xffffff',wireframe:true})));
 }
 
 function onGenerateGCodeButtonClick(e) {

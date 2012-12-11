@@ -56,6 +56,20 @@ Thingiview = function(containerId) {
   	var geometry;
   	var testCanvas;
 
+	this.getScene = function() {
+		return scene;
+	}
+	
+	this.removeObject = function() {
+		scene.remove(object);
+	}
+	
+	this.addObject = function(obj) {
+		scene.remove(object);
+		object = obj;
+		scene.add(object);
+	}
+
   	this.initScene = function() {
     	container.style.position = 'relative';
     	container.innerHTML      = '';
@@ -392,8 +406,7 @@ Thingiview = function(containerId) {
         particles = new THREE.ParticleSystem( geometry, material );
         particles.sortParticles = true;
         particles.updateMatrix();
-
-        scene.add( particles );
+        scene.add(particles);
                                 
         controls.update();
         renderer.render(scene, camera);
