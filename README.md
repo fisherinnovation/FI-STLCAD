@@ -5,6 +5,9 @@ Fisher Innovation STLCAD is a model preparation and slicing application for use 
 
 ![Settings Window](https://raw.github.com/fisherinnovation/FI-STLCAD/master/docs/images/screenshot.png)
 
+# Example
+http://labs.fisherinnovation.com/stlcad/
+
 # Features
 * Load STL from local source, web, or Thingiverse page.
 * Converts STL data to JSON for quick loading.
