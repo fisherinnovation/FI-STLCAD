@@ -1,0 +1,87 @@
+* {
+	margin:0;
+	padding:0;
+	overflow:hidden;
+}
+  	
+#controls {
+	position:absolute;
+	bottom:0;
+	background:none;
+	z-index:999;
+	background: rgba(0, 0, 0, 0.6);
+	width:100%;
+	padding:10px;
+	color:#EFEFEF;
+}
+  	
+#viewer {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;  		
+}
+
+#file-selector {
+	width:500px;
+	height:70%;
+	max-height:800px;
+	position:absolute;
+	z-index:9999;
+	background: rgba(0, 0, 0, 0.7);
+	padding:10px;
+	display:block;
+	top:0;
+	right:-510px;
+	color:#EFEFEF;
+}
+#file-selector ul {
+	overflow:scroll;
+	Overflow-x:hidden;
+	height:85%;
+}
+#file-selector li {
+	margin-bottom:8px;
+	width:460px;
+	padding-left:10px;
+	
+}
+#file-selector li a {
+	float:right;
+	margin-right:20px
+}
+#file-selector .filename {
+	display:inline;
+	padding-right:10px;
+}
+  	
+#stl-load, #thingiverse-load {
+	width:300px;
+	display:none;
+	position:absolute;
+	top:100px;
+	left:35%;
+	z-index:10;
+	background: rgba(0, 0, 0, 0.9);
+	padding:10px;
+	color:#EFEFEF;
+	  		
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+  	
+#stl-load legend, #thingiverse-load legend {
+	color:#EFEFEF;
+}
+  	
+#stl-load input, #thingiverse-load input {
+	width:90%;
+}
+
+.chromeFrameInstallDefaultStyle {
+	margin-top: 10px;
+	width: 800px;
+	border: 5px solid blue;
+}
