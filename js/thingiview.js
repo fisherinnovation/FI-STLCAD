@@ -309,138 +309,131 @@ Thingiview = function(containerId) {
     	}
   	}
   
-  this.updateMetadata = function() {
-    geometry.computeBoundingBox();
-    geometry.computeBoundingSphere();
+  	this.updateMetadata = function() {
+    	geometry.computeBoundingBox();
+    	geometry.computeBoundingSphere();
 
-    //console.log(geometry.boundingBox.min);
-    //console.log(geometry.boundingBox.max);
+	    //console.log(geometry.boundingBox.min);
+	    //console.log(geometry.boundingBox.max);
 
-    geometry.bounds = new THREE.Vector3(
-      geometry.boundingBox.max.x - geometry.boundingBox.min.x,
-      geometry.boundingBox.max.y - geometry.boundingBox.min.y,
-      geometry.boundingBox.max.z - geometry.boundingBox.min.z
-    );
-    //console.log(geometry.bounds);
+	    geometry.bounds = new THREE.Vector3(
+	      	geometry.boundingBox.max.x - geometry.boundingBox.min.x,
+	      	geometry.boundingBox.max.y - geometry.boundingBox.min.y,
+	      	geometry.boundingBox.max.z - geometry.boundingBox.min.z
+	    );
+	    //console.log(geometry.bounds);
+	    
+	    geometry.center = new THREE.Vector3(
+		      (geometry.boundingBox.max.x + geometry.boundingBox.min.x)/2,
+		      (geometry.boundingBox.max.y + geometry.boundingBox.min.y)/2,
+		      (geometry.boundingBox.max.z + geometry.boundingBox.min.z)/2
+	    );
+	    //console.log(geometry.center);    
+  	}
+
+  	this.centerCamera = function() {
+	    if (geometry) { 
+	      	scope.updateMetadata();
+	      
+	      	// set camera position outside and above our object.
+	      	distance = geometry.boundingSphere.radius / Math.sin((camera.fov/2) * (Math.PI / 180));
+	      	camera.position.x = 0;
+	      	camera.position.y = -distance;
+	      	camera.position.z = distance;
+	
+	      	//todo: how to control where it looks at!
+	      	//camera.lookAt(new THREE.Vector3(0, 0, geometry.center.z));
+	      	//camera.updateProjectionMatrix()
+	
+	      	//our directional light is out in space
+	      	directionalLight.x = geometry.boundingBox.min.x * 2;
+	      	directionalLight.y = geometry.boundingBox.min.y * 2;
+	      	directionalLight.z = geometry.boundingBox.max.z * 2;
+	
+	      	//our point light is straight above.
+	      	pointLight.x = geometry.center.x;
+	     	pointLight.y = geometry.center.y;
+	      	pointLight.z = geometry.boundingBox.max.z * 2;
+	    } else {
+	      	// set to any valid position so it doesn't fail before geometry is available
+	      	camera.position.y = -70;
+	      	camera.position.z = 70;
+			//camera.target.z = 0;
+	    }
+  	}
+
+  	this.loadArray = function(array) {
+	    log("Loading JSON STL data...");
+	    geometry = new STLGeometry(array);
+	    loadObjectGeometry();
     
-    geometry.center = new THREE.Vector3(
-      (geometry.boundingBox.max.x + geometry.boundingBox.min.x)/2,
-      (geometry.boundingBox.max.y + geometry.boundingBox.min.y)/2,
-      (geometry.boundingBox.max.z + geometry.boundingBox.min.z)/2
-    );
-    //console.log(geometry.center);    
-  }
+	    scope.setRotation(rotate);
+	    scope.centerCamera();
+	    log("Finished loading " + geometry.faces.length + " faces from STL model.");
+  	}
 
-  this.centerCamera = function() {
-    if (geometry) { 
-      scope.updateMetadata();
-      
-      // set camera position outside and above our object.
-      distance = geometry.boundingSphere.radius / Math.sin((camera.fov/2) * (Math.PI / 180));
-      camera.position.x = 0;
-      camera.position.y = -distance;
-      camera.position.z = distance;
-
-      //todo: how to control where it looks at!
-      //camera.lookAt(new THREE.Vector3(0, 0, geometry.center.z));
-      //camera.updateProjectionMatrix()
-
-      //our directional light is out in space
-      directionalLight.x = geometry.boundingBox.min.x * 2;
-      directionalLight.y = geometry.boundingBox.min.y * 2;
-      directionalLight.z = geometry.boundingBox.max.z * 2;
-
-      //our point light is straight above.
-      pointLight.x = geometry.center.x;
-      pointLight.y = geometry.center.y;
-      pointLight.z = geometry.boundingBox.max.z * 2;
-    } else {
-      // set to any valid position so it doesn't fail before geometry is available
-      camera.position.y = -70;
-      camera.position.z = 70;
-//      camera.target.z = 0;
-    }
-  }
-
-  this.loadArray = function(array) {
-    log("Loading JSON STL data...");
-    geometry = new STLGeometry(array);
-    loadObjectGeometry();
-    
-    scope.setRotation(rotate);
-    scope.centerCamera();
-    log("Finished loading " + geometry.faces.length + " faces from STL model.");
-  }
-
-  this.newWorker = function(cmd, param) {
-
-    scope.setRotation(rotate);
+  
+  	this.newWorker = function(cmd, param) {
+    	scope.setRotation(rotate);
   	
-    var worker = new WorkerFacade('js/thingiloader.js');
+    	var worker = new WorkerFacade('js/thingiloader.js');
     
-    worker.onmessage = function(event) {
-      if (event.data.status == "complete") {
-        // scene.removeObject(object);
-        geometry = new STLGeometry(event.data.content);
-        loadObjectGeometry();
-        scope.setRotation(rotate);
+	    worker.onmessage = function(event) {
+		      if (event.data.status == "complete") {
+			        // scene.removeObject(object);
+			        geometry = new STLGeometry(event.data.content);
+			        loadObjectGeometry();
+			        scope.setRotation(rotate);
+			
+			        log("finished loading " + geometry.faces.length + " faces.");
+			        //thingiview.setCameraView(cameraView);
+			        scope.centerCamera();
+		      } else if (event.data.status == "complete_points") {
+			        geometry = new THREE.Geometry();
+			
+			        var material = new THREE.ParticleBasicMaterial( { color: 0xff0000, opacity: 1 } );
+			
+			
+			        // material = new THREE.ParticleBasicMaterial( { size: 35, sizeAttenuation: false} );
+			        // material.color.setHSV( 1.0, 0.2, 0.8 );
+			        
+			        for (i in event.data.content[0]) {
+			        // for (var i=0; i<10; i++) {
+			          vector = new THREE.Vector3( event.data.content[0][i][0], event.data.content[0][i][1], event.data.content[0][i][2] );
+			          geometry.vertices.push( vector );
+			        }
+			
+			        particles = new THREE.ParticleSystem( geometry, material );
+			        particles.sortParticles = true;
+			        particles.updateMatrix();
+			        scene.add(particles);
+			                                
+			        controls.update();
+			        renderer.render(scene, camera);
+			        
+			        scope.setRotation(false);
+			        //scope.setRotation(true);
+			        log("Finished loading " + event.data.content[0].length + " points.");
+			        // scope.centerCamera();
+		      } else if (event.data.status == "progress") {
+		        	log(event.data.content);
+		      } else if (event.data.status == "message") {
+		        	log(event.data.content);
+		      } else if (event.data.status == "alert") {
+		        	scope.displayAlert(event.data.content);
+		      } else {
+			        alert('Error: ' + event.data);
+			        log('Unknown Worker Message: ' + event.data);
+		      }
+	    }
 
-        log("finished loading " + geometry.faces.length + " faces.");
-        //thingiview.setCameraView(cameraView);
-        scope.centerCamera();
-      } else if (event.data.status == "complete_points") {
-        geometry = new THREE.Geometry();
+    	worker.onerror = function(error) {
+      		log(error);
+      		error.preventDefault();
+    	}
 
-        var material = new THREE.ParticleBasicMaterial( { color: 0xff0000, opacity: 1 } );
-
-
-        // material = new THREE.ParticleBasicMaterial( { size: 35, sizeAttenuation: false} );
-        // material.color.setHSV( 1.0, 0.2, 0.8 );
-        
-        for (i in event.data.content[0]) {
-        // for (var i=0; i<10; i++) {
-          vector = new THREE.Vector3( event.data.content[0][i][0], event.data.content[0][i][1], event.data.content[0][i][2] );
-          geometry.vertices.push( vector );
-        }
-
-        particles = new THREE.ParticleSystem( geometry, material );
-        particles.sortParticles = true;
-        particles.updateMatrix();
-        scene.add(particles);
-                                
-        controls.update();
-        renderer.render(scene, camera);
-        
-        scope.setRotation(false);
-        //scope.setRotation(true);
-        log("Finished loading " + event.data.content[0].length + " points.");
-        // scope.centerCamera();
-      } else if (event.data.status == "progress") {
-        log(event.data.content);
-      } else if (event.data.status == "message") {
-        log(event.data.content);
-      } else if (event.data.status == "alert") {
-        scope.displayAlert(event.data.content);
-      } else {
-        alert('Error: ' + event.data);
-        log('Unknown Worker Message: ' + event.data);
-      }
-    }
-
-    worker.onerror = function(error) {
-      log(error);
-      error.preventDefault();
-    }
-
-    worker.postMessage({'cmd':cmd, 'param':param});
-  }
-
-  //this.displayAlert = function(msg) {
-    //msg = msg + "<br/><br/><center><input type=\"button\" value=\"Ok\" onclick=\"$('#alertBox').hide()\"></center>"
-    //alertBox.html(msg);
-    //alertBox.show();
-    // log(msg);
-  //}
+   	 	worker.postMessage({'cmd':cmd, 'param':param});
+  	}
 
 	
 	/**
@@ -453,102 +446,105 @@ Thingiview = function(containerId) {
     	scene.add(plane);
   	}
 
-  function loadObjectGeometry() {
-    if (scene && geometry) {
-      if (objectMaterial == 'wireframe') {
-        // material = new THREE.MeshColorStrokeMaterial(objectColor, 1, 1);
-        material = new THREE.MeshBasicMaterial({color:objectColor,wireframe:true});
-      } else {
-        if (isWebGl) {
-          material = new THREE.MeshPhongMaterial({color:objectColor});
-          // material = new THREE.MeshColorFillMaterial(objectColor);
-          // material = new THREE.MeshLambertMaterial({color:objectColor});
-          //material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading});
-        } else {
-          //material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading});
-          // material = new THREE.MeshColorFillMaterial(objectColor);
-          material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading, wireframe:false, overdraw:true});
-        }
-      }
 
-      // scene.removeObject(object);      
+  	function loadObjectGeometry() {
+    	if (scene && geometry) {
+      		if (objectMaterial == 'wireframe') {
+        		// material = new THREE.MeshColorStrokeMaterial(objectColor, 1, 1);
+        		material = new THREE.MeshBasicMaterial({color:objectColor,wireframe:true});
+	      	} else {
+	        	if (isWebGl) {
+	          		material = new THREE.MeshPhongMaterial({color:objectColor});
+		          	// material = new THREE.MeshColorFillMaterial(objectColor);
+		          	// material = new THREE.MeshLambertMaterial({color:objectColor});
+		          	//material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading});
+	        	} else {
+	          		//material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading});
+	          		// material = new THREE.MeshColorFillMaterial(objectColor);
+	          		material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading, wireframe:false, overdraw:true});
+	        	}
+	      	}
 
-      if (object) {
-        // shouldn't be needed, but this fixes a bug with webgl not removing previous object when loading a new one dynamically
-        object.materials = [new THREE.MeshBasicMaterial({color:0xffffff, opacity:0})];
-
-        scene.remove(object);
-        // object.geometry = geometry;
-        // object.materials = [material];
-      }
-      
-      scope.centerModel();
-      scope.centerCamera();
-
-      object = new THREE.Mesh(geometry, material);
-  		scene.add(object);
-
-      if (objectMaterial != 'wireframe') {
-        object.overdraw = true;
-        object.doubleSided = true;
-      }
-      
-      object.updateMatrix();
-    
-      targetXRotation = 0;
-      targetYRotation = 0;
-
-      //sceneLoop();
-    }
-  }
+	      	// scene.removeObject(object);      
+	
+	      	if (object) {
+	        	// shouldn't be needed, but this fixes a bug with webgl not removing previous object when loading a new one dynamically
+	        	object.materials = [new THREE.MeshBasicMaterial({color:0xffffff, opacity:0})];
+	
+	        	scene.remove(object);
+	        	// object.geometry = geometry;
+	        	// object.materials = [material];
+	      	}
+	      
+	      	scope.centerModel();
+	      	scope.centerCamera();
+	
+	      	object = new THREE.Mesh(geometry, material);
+	  		scene.add(object);
+	
+	      	if (objectMaterial != 'wireframe') {
+	       	 	object.overdraw = true;
+	        	object.doubleSided = true;
+	      	}
+	      
+	      	object.updateMatrix();
+	    
+	      	targetXRotation = 0;
+	      	targetYRotation = 0;
+	
+	      	//sceneLoop();
+	    }
+  	}
 
 };
 
 var STLGeometry = function(stlArray) {
-  // log("building geometry...");
+  	// log("building geometry...");
 	THREE.Geometry.call(this);
 
 	var scope = this;
 
-  // var vertexes = stlArray[0];
-  // var normals  = stlArray[1];
-  // var faces    = stlArray[2];
+	// var vertexes = stlArray[0];
+	// var normals  = stlArray[1];
+  	// var faces    = stlArray[2];
 
-  for (var i=0; i<stlArray[0].length; i++) {    
-    v(stlArray[0][i][0], stlArray[0][i][1], stlArray[0][i][2]);
-  }
+  	for (var i=0; i<stlArray[0].length; i++) {    
+    	v(stlArray[0][i][0], stlArray[0][i][1], stlArray[0][i][2]);
+  	}
 
-  for (var i=0; i<stlArray[1].length; i++) {
-    f3(stlArray[1][i][0], stlArray[1][i][1], stlArray[1][i][2]);
-  }
+  	for (var i=0; i<stlArray[1].length; i++) {
+    	f3(stlArray[1][i][0], stlArray[1][i][1], stlArray[1][i][2]);
+  	}
 
-  function v(x, y, z) {
-    // log("adding vertex: " + x + "," + y + "," + z);
-    scope.vertices.push( new THREE.Vector3( x, y, z )  );
-  }
+  	function v(x, y, z) {
+    	// log("adding vertex: " + x + "," + y + "," + z);
+    	scope.vertices.push( new THREE.Vector3( x, y, z )  );
+  	}
 
-  function f3(a, b, c) {
-    // log("adding face: " + a + "," + b + "," + c)
-    scope.faces.push( new THREE.Face3( a, b, c ) );
-  }
+  	function f3(a, b, c) {
+    	// log("adding face: " + a + "," + b + "," + c)
+    	scope.faces.push( new THREE.Face3( a, b, c ) );
+  	}
 
-  // log("computing centroids...");
-  this.computeCentroids();
-  // log("computing normals...");
-  // this.computeNormals();
+  	// log("computing centroids...");
+  	this.computeCentroids();
+ 	// log("computing normals...");
+  	// this.computeNormals();
 	this.computeFaceNormals();
-//	this.sortFacesByMaterial();
-  // log("finished building geometry");
+	//this.sortFacesByMaterial();
+  	// log("finished building geometry");
 }
 
 STLGeometry.prototype = new THREE.Geometry();
 STLGeometry.prototype.constructor = STLGeometry;
 
 function log(msg) {
-  if (this.console) {
-    console.log(msg);
-  }
+  	if (this.console) {
+    	console.log(msg);
+  	}
 }
+
+
 
 /* A facade for the Web Worker API that fakes it in case it's missing. 
 Good when web workers aren't supported in the browser, but it's still fast enough, so execution doesn't hang too badly (e.g. Opera 10.5).
@@ -557,11 +553,11 @@ By Stefan Wehrmeyer, licensed under MIT
 
 var WorkerFacade;
 if(!!window.Worker){
-    WorkerFacade = (function(){
-        return function(path){
-            return new window.Worker(path);
+	WorkerFacade = (function(){
+    	return function(path){
+        	return new window.Worker(path);
         };
-    }());
+    }( ));
 } else {
     WorkerFacade = (function(){
         var workers = {}, masters = {}, loaded = false;
@@ -620,11 +616,10 @@ if(!!window.Worker){
 The Worker code must should use a custom function (name it how you want) instead of postMessage.
 Put this at the end of the Worker:
 
-if(typeof(window) === "undefined"){
-    onmessage = nameOfWorkerFunction;
-    customPostMessage = postMessage;
-} else {
-    customPostMessage = WorkerFacade.add("path/to/thisworker.js", nameOfWorkerFunction);
-}
-
+	if(typeof(window) === "undefined"){
+	    onmessage = nameOfWorkerFunction;
+	    customPostMessage = postMessage;
+	} else {
+	    customPostMessage = WorkerFacade.add("path/to/thisworker.js", nameOfWorkerFunction);
+	}
 */

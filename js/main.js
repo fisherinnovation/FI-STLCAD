@@ -18,9 +18,8 @@ function init() {
 	loadFileList();
   	loadDefaultModel();
   	
+  	// Show file list when mouse is close enough..
   	$(document).mousemove(function(e){
-  		//console.log($(window).width());
-  		//console.log(e.pageX);
   		if(!fileListOpen) {
   			if(e.pageX > $(window).width() - 50) {
       			showFileList();
@@ -43,7 +42,6 @@ function init() {
   	$('#stl-load').bind('keydown', onSTLURLKeyDown); 
   	$('#nav-generate-gcode').bind('click', onGenerateGCodeButtonClick);
   	$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
-  	
   	
   	
   	// Drop files from desktop onto main page to import them.
