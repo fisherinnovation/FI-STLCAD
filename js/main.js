@@ -1,5 +1,6 @@
 $(document).ready(init);
 
+var appVersion = '0.0.1 unstable';
 var stlLoadDialog = false;
 var generateGCodeDialog = false;
 var fileListURL = 'php/files.php';
@@ -63,6 +64,22 @@ function init() {
       		reader.readAsText(files[0]);
     	}
   	});
+  	
+  	displayBuildInformation();
+}
+
+
+function displayBuildInformation() {
+	var div = document.createElement("div");
+	div.style.position = "absolute";
+	div.style.left = "10px";
+	div.style.bottom = "50px";
+	//div.style.background = "red";
+	div.style.color = "white";
+	div.style.zIndex = 10000;
+	div.innerHTML = "Build " + appVersion;
+	
+	document.body.appendChild(div);
 }
 
 
