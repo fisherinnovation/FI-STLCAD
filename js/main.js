@@ -1,6 +1,6 @@
 $(document).ready(init);
 
-var appVersion = '0.0.1 unstable';
+var appVersion = '0.0.2 unstable';
 var stlLoadDialog = false;
 var generateGCodeDialog = false;
 var fileListURL = 'php/files.php';
