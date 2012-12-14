@@ -107,7 +107,7 @@ function initAjaxForm() {
  * Sets up the file drag and drop actions on the body of the page. 
  */
 function initFileDrop() {
-    $('#stl-load').filedrop({
+    $('body').filedrop({
 	    fallback_id: 'upload_button',   // An identifier of a standard file input element
 	    url: 'php/upload.php',         	// Upload handler, handles each file separately
 	    paramname: 'userfile',          // POST parameter name used on serverside to reference file
