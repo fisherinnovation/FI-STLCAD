@@ -22,6 +22,8 @@
   	<script type="text/javascript" src="js/thingiview.js"></script>
   	<script type="text/javascript" src="js/gcode-parser.js"></script>
     <script type="text/javascript" src="js/gcode-model.js"></script>
+    <script type="text/javascript" src="js/jquery.filedrop.js"></script>
+	<script type="text/javascript" src="js/jquery.form.js"></script>
   	<script type="text/javascript" src="js/stats.js"></script>
   	<script type="text/javascript" src="js/main.js"></script>
 </head>
@@ -59,11 +61,15 @@
 	
 	<div id="stl-load">
 		<fieldset>
-		    <legend>Load STL</legend>
+		    <legend>Load STL From Web</legend>
 		    <label>STL URL</label>
-		    <input id="stl-url" type="text" placeholder="http://thingiverse-production.s3.amazonaws.com/assets/1c/fc/b6/e8/59/snowflake.stl">
+		    <input id="stl-url" type="text" placeholder="Place URL Here...">
 		    <span class="help-block">Enter a full url to a STL file hosted on the web.</span>
-	  </fieldset>
+	  	</fieldset>
+		
+	  	<legend>Local STL File</legend>
+		<input type="file" name="files[]" multiple>
+		<span class="help-block">Choose a file from your local file system or drag it into this dialog.</span>         
 	</div>
 	
 	<div id="gcode-options">

@@ -1,15 +1,12 @@
 <?php
 
 function parse_stl_string($str) {
-  $lines = split("\n", $str);
-  
-  $vertexes = array();
-  $normals  = array();
-  $faces    = array();
-  
-  $face_vertexes = array();
-
-  $normal_count = -1;
+  $lines 			= explode("\n", $str);
+  $vertexes 		= array();
+  $normals  		= array();
+  $faces    		= array();
+  $face_vertexes 	= array();
+  $normal_count 	= -1;
 
   foreach($lines as $line) {
     // TODO: maybe faster if you strip spaces on whole contents instead of every line

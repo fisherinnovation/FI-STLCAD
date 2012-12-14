@@ -18,6 +18,8 @@ function init() {
 	
 	loadFileList();
   	loadDefaultModel();
+  	initFileDrop();			// Setup file drag and drop actions.
+	//initAjaxForm(); 		// Setup Ajax for handelers.
   	
   	// Show file list when mouse is close enough..
   	$(document).mousemove(function(e){
@@ -46,6 +48,7 @@ function init() {
   	
   	
   	// Drop files from desktop onto main page to import them.
+  	/*
   	$('body').on('dragover', function(event) {
     	event.stopPropagation();
     	event.preventDefault();
@@ -64,10 +67,138 @@ function init() {
       		reader.readAsText(files[0]);
     	}
   	});
+  	*/
   	
+  	// Display the current build information.
   	displayBuildInformation();
 }
 
+/**
+ * Sets up the manual file upload actions with AJAX handeling to avoid
+ * page refreshes. 
+ */
+/*
+function initAjaxForm() {
+	$('#manualFileUpload').ajaxForm({
+        beforeSubmit: function() {
+            $('#results').html('Submitting...');
+            
+            $("#progressbar").fadeIn(); // Show the progress bar
+        },
+        success: function(data) {
+        	data = jQuery.parseJSON(data);
+        	
+        	$("#progressbar").fadeOut(); // Hide the progress bar
+            
+            if(data['location'] != undefined) {
+	        	brazzersize(data['location']);
+	        }
+        },
+        uploadProgress: function(data) {
+        	var percentage = (data['loaded'] / data['total']) * 100;
+        	$("#progressbar").progressbar({ value:percentage });
+        }
+	});
+}
+*/
+
+
+/**
+ * Sets up the file drag and drop actions on the body of the page. 
+ */
+function initFileDrop() {
+    $('#stl-load').filedrop({
+	    fallback_id: 'upload_button',   // An identifier of a standard file input element
+	    url: 'php/upload.php',         	// Upload handler, handles each file separately
+	    paramname: 'userfile',          // POST parameter name used on serverside to reference file
+	    data: { },
+	    headers: {          			// Send additional request headers
+	        'header': 'value'
+	    },
+	    error: function(err, file) {
+	        switch(err) {
+	            case 'BrowserNotSupported':
+	                console.log('Browser does not support html5 drag and drop.');
+	            break;
+	            
+	            case 'TooManyFiles':
+	                console.log('You have attempted to upload too many files.')
+	            break;
+	            
+	            case 'FileTooLarge':
+	            	console.log('Selected file was too large to upload.')
+	            break;
+	            
+	            default:
+	            break;
+	        }
+	    },
+	    maxfiles: 1,
+	    maxfilesize: 20,    // Max file size in MBs
+	    dragOver: function() {
+	        console.log('Drag over #dropzone');
+	        //$('body').css({"background-color":"#666666"});
+	    },
+	    dragLeave: function() {
+	        //console.log('Drag leave #dropzone');
+	        //$('body').css({"background-color":"#ffffff"});
+	    },
+	    docOver: function() {
+	        //console.log('Drag over document');
+	    },
+	    docLeave: function() {
+	        //console.log('Drag leave document');
+	    },
+	    drop: function() {
+	        console.log('Drop!');
+	       // $('body').css({"background-color":"#ffffff"});
+	    },
+	    uploadStarted: function(i, file, len){
+	        // a file began uploading
+	        // i = index => 0, 1, 2, 3, 4 etc
+	        // file is the actual file of the index
+	        // len = total files user dropped
+	        console.log('Upload started!');
+	        
+	        //$("#progressbar").fadeIn();
+	    },
+	    uploadFinished: function(i, file, response, time) {
+	        // response is the data you got back from server in JSON format.
+	        console.log('Upload Finished! ' + response['location']);
+	        
+	        //$("#progressbar").fadeOut();
+	        
+	        $('#stl-load').fadeOut(250)
+	        
+	        loadFileList();
+	        
+	        $.getJSON('objects/' + response['location'] + '.json', function(data) {
+	       		activeModel = response['location'];
+				thingiview.loadArray(eval(data));
+			});
+	    },
+	    progressUpdated: function(i, file, progress) {
+	        // this function is used for large files and updates intermittently
+	        // progress is the integer value of file being uploaded percentage to completion
+	        console.log('progressUpdated: ' + progress);
+	        //$("#progressbar").progressbar({ value:progress });
+	    },
+	    speedUpdated: function(i, file, speed) {
+	        // speed in kb/s
+	    },
+	    rename: function(name) {
+	        // name in string format
+	        // must return alternate name as string
+	    },
+	    beforeEach: function(file) {
+	        // file is a file object
+	        // return false to cancel upload
+	    },
+	    afterAll: function() {
+	        // runs after all files have been uploaded or otherwise dealt with
+	    }
+	});
+}
 
 function displayBuildInformation() {
 	var div = document.createElement("div");
