@@ -1,2 +1,6 @@
 .project
 *.pyc
+objects/*.json
+objects/*.stl
+objects/*.gcode
+uploads/*.stl
