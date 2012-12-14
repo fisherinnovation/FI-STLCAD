@@ -30,4 +30,4 @@ Built with the help of the following great open source projects,
 * Three.js https://github.com/mrdoob/three.js/
 * GCode Viewer https://github.com/joewalnes/gcode-viewer
 * Thingiview.js https://github.com/tbuser/thingiview.js
-* jQuery-File-Upload https://github.com/blueimp/jQuery-File-Upload
+* jquery-filedrop http://www.github.com/weixiyen/jquery-filedrop
