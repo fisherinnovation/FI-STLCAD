@@ -24,7 +24,7 @@
 				$data['location'] = "../uploads/" . $_FILES["userfile"]["name"];
 				
 				// Validate this is a STL before moving into system.
-				if($ext[sizeof($ext) - 1] != 'stl') {
+				if($ext[sizeof($ext) - 1] != 'stl' && $ext[sizeof($ext) - 1] != 'STL') {
 					$data['error'] = "Unknown file type. ";
 					echo json_encode($data);
 					return;
