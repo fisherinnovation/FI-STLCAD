@@ -437,7 +437,7 @@ Thingiview = function(containerId) {
 	 * Note: 600px x 600px = 8"x8"
 	 */
   	function loadPlaneGeometry() {
-  		plane = new Grid(600, 600, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
+  		plane = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
     	scene.add(plane);
   	}
 
