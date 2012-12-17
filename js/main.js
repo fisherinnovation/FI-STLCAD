@@ -46,61 +46,9 @@ function init() {
   	$('#nav-generate-gcode').bind('click', onGenerateGCodeButtonClick);
   	$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
   	
-  	
-  	// Drop files from desktop onto main page to import them.
-  	/*
-  	$('body').on('dragover', function(event) {
-    	event.stopPropagation();
-    	event.preventDefault();
-    	event.originalEvent.dataTransfer.dropEffect = 'copy'
-  	}).on('drop', function(event) {
-    	event.stopPropagation();
-    	event.preventDefault();
-    	var files = event.originalEvent.dataTransfer.files;
-    
-    	if (files.length > 0) {
-      		var reader = new FileReader();
-      		reader.onload = function() {
-        		openGCodeFromText(reader.result);
-      		};
-      
-      		reader.readAsText(files[0]);
-    	}
-  	});
-  	*/
-  	
   	// Display the current build information.
   	displayBuildInformation();
 }
-
-/**
- * Sets up the manual file upload actions with AJAX handeling to avoid
- * page refreshes. 
- */
-/*
-function initAjaxForm() {
-	$('#manualFileUpload').ajaxForm({
-        beforeSubmit: function() {
-            $('#results').html('Submitting...');
-            
-            $("#progressbar").fadeIn(); // Show the progress bar
-        },
-        success: function(data) {
-        	data = jQuery.parseJSON(data);
-        	
-        	$("#progressbar").fadeOut(); // Hide the progress bar
-            
-            if(data['location'] != undefined) {
-	        	brazzersize(data['location']);
-	        }
-        },
-        uploadProgress: function(data) {
-        	var percentage = (data['loaded'] / data['total']) * 100;
-        	$("#progressbar").progressbar({ value:percentage });
-        }
-	});
-}
-*/
 
 
 /**
