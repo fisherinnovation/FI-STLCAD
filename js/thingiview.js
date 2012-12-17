@@ -144,9 +144,8 @@ Thingiview = function(containerId) {
 	    //this.setCameraView(cameraView);
 	    this.setObjectMaterial(objectMaterial);
 	
-	    testCanvas = document.createElement('canvas');
-	    
 	    // Check for WebGL compatibility
+	    testCanvas = document.createElement('canvas');
 	    try {
 	    	if (testCanvas.getContext('experimental-webgl')) {
 	      		log("Passed WebGL detection!");
@@ -196,7 +195,9 @@ Thingiview = function(containerId) {
 		}, 1000 / 60 );
 	}
 
-  
+	/**
+	 * 
+	 */
   	function sceneLoop() {
     	if (object) {
 			object.updateMatrix();
@@ -211,6 +212,20 @@ Thingiview = function(containerId) {
 
     	//requestAnimationFrame(sceneLoop); // And repeat...
   	}
+  	
+  	/**
+  	 * Rotates a specified object on a specified axis.
+  	 * 
+  	 * @param	object:
+  	 * @param	axis:
+  	 * @param	radians: 
+  	 */
+	this.rotateObjectOnAxis = function rotateAroundObjectAxis(object, axis, radians) {
+	    var rotObjectMatrix = new THREE.Matrix4();
+	    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+	    object.matrix.multiplySelf(rotObjectMatrix);      // post-multiply
+	    object.rotation.setEulerFromRotationMatrix(object.matrix);
+	}
 
   
   	this.rotateLoop = function() {

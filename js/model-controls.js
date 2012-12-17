@@ -6,6 +6,7 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	THREE.EventTarget.call(this);
 
 	var _this = this,
+	
 	STATE = { NONE : -1, ROTATE : 0, ZOOM : 1, PAN : 2 };
 
 	this.object = object;
@@ -49,6 +50,7 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	var INTERSECTED, SELECTED;
 	var controls = thingiview.getControls();
 	
+	var _rotateObject = false;
 	var _keyPressed = false,
 	_state = STATE.NONE,
 
@@ -201,28 +203,43 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	};
 
 	// Listeners
-	function keydown( event ) {
-		if ( ! _this.enabled ) return;
+	function keydown(event) {
+		//if (! _this.enabled) return;
 		//event.preventDefault();
 
-		if ( _state !== STATE.NONE ) {
+		var key = event.keyCode;
+
+		//console.log('Key Down: ' + key);
+
+		// SHIFT key
+		if(key == '16') {
+			_rotateObject = true;
+		}
+
+		if(_state !== STATE.NONE) {
 			return;
-		} else if ( event.keyCode === _this.keys[ STATE.ROTATE ] && !_this.noRotate ) {
+		} else if (key === _this.keys[ STATE.ROTATE ] && !_this.noRotate ) {
 			_state = STATE.ROTATE;
-		} else if ( event.keyCode === _this.keys[ STATE.ZOOM ] && !_this.noZoom ) {
+		} else if (key === _this.keys[ STATE.ZOOM ] && !_this.noZoom ) {
 			_state = STATE.ZOOM;
-		} else if ( event.keyCode === _this.keys[ STATE.PAN ] && !_this.noPan ) {
+		} else if (key === _this.keys[ STATE.PAN ] && !_this.noPan ) {
 			_state = STATE.PAN;
 		}
 
-		if ( _state !== STATE.NONE ) {
+		if (_state == STATE.NONE) {
 			_keyPressed = true;
+		} else {
+			_keyPressed = false;
 		}
 	}
 
 	function keyup( event ) {
-		if ( ! _this.enabled ) return;
-
+		//console.log('Key Up: ' + event.keyCode);
+		
+		//if ( ! _this.enabled ) return;
+		
+		_rotateObject = false;
+		
 		if ( _state !== STATE.NONE ) {
 			_state = STATE.NONE;
 		}
@@ -249,10 +266,10 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			offset.copy(intersects[0].point).subSelf(plane.position);
 		}
 		
-
+		// Scene manipulation
 		if(_state === STATE.NONE) {
 			_state = event.button;
-
+			
 			if (_state === STATE.ROTATE && !_this.noRotate) {
 				_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall(event.clientX, event.clientY);
 			} else if (_state === STATE.ZOOM && !_this.noZoom) {
@@ -266,23 +283,32 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	function mousemove( event ) {
 		if (!_this.enabled ) return;
 		
-		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-		var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
-		projector.unprojectVector( vector, camera );
+		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+		projector.unprojectVector(vector, camera);
 
 		var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
 
+		// Check if an object was selected prior to mouse move.
 		if(SELECTED) {
-			var intersects = ray.intersectObject(plane);
-			SELECTED.position.copy(intersects[0].point.subSelf(offset));
-			return;
+			// Check if we are to rotate the object or move it.
+			if(_rotateObject) {
+				// Rotation tests
+				var xAxis = new THREE.Vector3(1,0,0);
+				thingiview.rotateObjectOnAxis(SELECTED, xAxis, Math.PI / 180)
+				return;
+			} else {
+				var intersects = ray.intersectObject(plane);
+				SELECTED.position.copy(intersects[0].point.subSelf(offset));
+				return;
+			}
 		}
 		
+		// Check for intersections.
 		var intersects = ray.intersectObjects( objects );
-
-		if ( intersects.length > 0 ) {
+		if(intersects.length > 0 ) {
 			if ( INTERSECTED != intersects[ 0 ].object ) {
 				if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
 
@@ -304,15 +330,15 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			//container.style.cursor = 'auto';
 		}
 
-
 		if ( _keyPressed ) {
-			_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
-			_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
-			_panStart = _panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
+			//_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
+			//_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
+			//_panStart = _panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
 
 			_keyPressed = false;
 		}
-
+		
+		// Scene manipulation
 		if ( _state === STATE.NONE ) {
 			return;
 		} else if ( _state === STATE.ROTATE && !_this.noRotate ) {
@@ -335,7 +361,7 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			SELECTED = null;
 		}
 
-		_state = STATE.NONE;
+		_state = STATE.NONE; // Reset the state.
 	}
 
 	function mousewheel( event ) {
