@@ -6,12 +6,16 @@ Thingiview = function(containerId) {
   	var camera						= null;
 	var scene						= null;
   	var renderer					= null;
+  	
   	var object						= null;
+  	var objects = [];
+  	
   	var plane						= null;
   	var controls					= null;
   	var ambientLight				= null;
   	var frontLight					= null;
   	var backLight		 			= null;
+  	var projector;
   	var targetXRotation				= 0;
   	var targetXRotationOnMouseDown	= 0;
   	var mouseX						= 0;
@@ -56,14 +60,40 @@ Thingiview = function(containerId) {
   	var geometry;
   	var testCanvas;
 
-	this.getScene = function() {
-		return scene;
-	}
+	/**
+	 * Returns a refernce to the active scene. 
+	 */
+	this.getScene = function() { return scene; }
+	
+	/**
+	 * Returns a refernce to the active projector. 
+	 */
+	this.getProjector = function() { return projector; }
+	
+	/**
+	 * Returns a reference to the active camera. 
+	 */
+	this.getCamera = function() { return camera; }
+	
+	/**
+	 * Returns a refernce to the active objects. 
+	 */
+	this.getObjects = function() { return objects; }
+	
+	/**
+	 * Returns a reference to the active plane. 
+	 */
+	this.getPlane = function() { return plane; }
+	
+	/**
+	 * Returns a refernce to the active controls. 
+	 */
+	this.getControls = function() { return controls; }
+	
 	
 	this.removeObject = function() {
 		scene.remove(object);
 	}
-	
 	this.addObject = function(obj) {
 		scene.remove(object);
 		object = obj;
@@ -107,7 +137,9 @@ Thingiview = function(containerId) {
 	   	scene.add(pointLight);
 	
 		// Load plane (print bed)
-	    if (showPlane) loadPlaneGeometry();
+	    if(showPlane) loadPlaneGeometry();
+	    
+	    projector = new THREE.Projector();
 	    
 	    //this.setCameraView(cameraView);
 	    this.setObjectMaterial(objectMaterial);
@@ -146,7 +178,7 @@ Thingiview = function(containerId) {
 	    container.appendChild(stats.domElement);
 	    
 	    // Controls
-	    controls = new THREE.ModelControls(camera, renderer.domElement);
+	    controls = new THREE.ModelControls(this, camera, renderer.domElement);
 	    controls.zoomSpeed = 0.08;
 	    controls.dynamicDampingFactor = 0.40;
 	
@@ -155,10 +187,8 @@ Thingiview = function(containerId) {
 	
 	    // Render Scene
 	    setInterval( function () {
-		    stats.begin();
-		    
-			sceneLoop(); // Loop scene
-			
+		    stats.begin();	// https://github.com/mrdoob/stats.js/
+		    sceneLoop();
 			stats.end();
 		}, 1000 / 60 );
 	}
@@ -437,8 +467,11 @@ Thingiview = function(containerId) {
 	 * Note: 600px x 600px = 8"x8"
 	 */
   	function loadPlaneGeometry() {
-  		plane = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
-    	scene.add(plane);
+  		var plane2 = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
+  		plane = new THREE.Mesh( new THREE.PlaneGeometry( 840, 450, 100, 100 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } ) );
+		plane.visible = false;
+		scene.add(plane);
+		scene.add(plane2);
   	}
 
 
@@ -476,6 +509,8 @@ Thingiview = function(containerId) {
 	
 	      	object = new THREE.Mesh(geometry, material);
 	  		scene.add(object);
+	  		
+	  		objects.push(object);
 	  		
 	       	if (objectMaterial != 'wireframe') {
 	       	 	object.overdraw = true;

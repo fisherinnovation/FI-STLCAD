@@ -2,8 +2,8 @@
  * @author Eberhard Graether / http://egraether.com/
  */
 
-THREE.ModelControls = function ( object, domElement ) {
-	THREE.EventTarget.call( this );
+THREE.ModelControls = function (thingiview, object, domElement) {
+	THREE.EventTarget.call(this);
 
 	var _this = this,
 	STATE = { NONE : -1, ROTATE : 0, ZOOM : 1, PAN : 2 };
@@ -37,7 +37,18 @@ THREE.ModelControls = function ( object, domElement ) {
 	this.target = new THREE.Vector3();
 
 	var lastPosition = new THREE.Vector3();
-
+	
+	var projector = thingiview.getProjector();
+	var camera = thingiview.getCamera();
+	var objects = thingiview.getObjects();
+	var plane = thingiview.getPlane();
+	
+	var mouse = new THREE.Vector2();
+	var offset = new THREE.Vector3();
+	
+	var INTERSECTED, SELECTED;
+	var controls = thingiview.getControls();
+	
 	var _keyPressed = false,
 	_state = STATE.NONE,
 
@@ -45,10 +56,8 @@ THREE.ModelControls = function ( object, domElement ) {
 
 	_rotateStart = new THREE.Vector3(),
 	_rotateEnd = new THREE.Vector3(),
-
 	_zoomStart = new THREE.Vector2(),
 	_zoomEnd = new THREE.Vector2(),
-
 	_panStart = new THREE.Vector2(),
 	_panEnd = new THREE.Vector2();
 
@@ -219,27 +228,84 @@ THREE.ModelControls = function ( object, domElement ) {
 		}
 	}
 
-	function mousedown( event ) {
-		if ( ! _this.enabled ) return;
+	function mousedown(event) {
+		if (!_this.enabled) return;
 
 		event.preventDefault();
 		event.stopPropagation();
 
-		if ( _state === STATE.NONE ) {
+		// Check for intersections
+		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+		projector.unprojectVector(vector, camera);
+		var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+		var intersects = ray.intersectObjects(objects);
+		
+		console.log(intersects);
+		
+		if (intersects.length > 0) {
+			//_this.enabled = false;
+
+			SELECTED = intersects[0].object;
+			
+			var intersects = ray.intersectObject(plane);
+			console.log(intersects);
+			
+			offset.copy(intersects[0].point).subSelf(plane.position);
+		}
+		
+
+		if(_state === STATE.NONE) {
 			_state = event.button;
 
-			if ( _state === STATE.ROTATE && !_this.noRotate ) {
-				_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
-			} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
-				_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
-			} else if ( !this.noPan ) {
-				_panStart = _panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
+			if (_state === STATE.ROTATE && !_this.noRotate) {
+				_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall(event.clientX, event.clientY);
+			} else if (_state === STATE.ZOOM && !_this.noZoom) {
+				_zoomStart = _zoomEnd = _this.getMouseOnScreen(event.clientX, event.clientY);
+			} else if (!this.noPan) {
+				_panStart = _panEnd = _this.getMouseOnScreen(event.clientX, event.clientY);
 			}
 		}
 	}
 
 	function mousemove( event ) {
-		if ( ! _this.enabled ) return;
+		if (!_this.enabled ) return;
+		
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+		var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+		projector.unprojectVector( vector, camera );
+
+		var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+
+		if(SELECTED) {
+			var intersects = ray.intersectObject(plane);
+			console.log(intersects[0].point.subSelf(offset));
+			SELECTED.position.copy(intersects[0].point.subSelf(offset));
+			return;
+		}
+		
+		var intersects = ray.intersectObjects( objects );
+
+		if ( intersects.length > 0 ) {
+			if ( INTERSECTED != intersects[ 0 ].object ) {
+				if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+
+				INTERSECTED = intersects[ 0 ].object;
+				INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+
+				plane.position.copy( INTERSECTED.position );
+				plane.lookAt( camera.position );
+			}
+
+			//container.style.cursor = 'pointer';
+
+		} else {
+			if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+			INTERSECTED = null;
+			//container.style.cursor = 'auto';
+		}
+
 
 		if ( _keyPressed ) {
 			_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
@@ -261,10 +327,15 @@ THREE.ModelControls = function ( object, domElement ) {
 	}
 
 	function mouseup( event ) {
-		if ( ! _this.enabled ) return;
-
+		//if ( ! _this.enabled ) return;
+		
 		event.preventDefault();
 		event.stopPropagation();
+
+		if (INTERSECTED) {
+			plane.position.copy(INTERSECTED.position);
+			SELECTED = null;
+		}
 
 		_state = STATE.NONE;
 	}
