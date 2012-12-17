@@ -467,11 +467,14 @@ Thingiview = function(containerId) {
 	 * Note: 600px x 600px = 8"x8"
 	 */
   	function loadPlaneGeometry() {
-  		var plane2 = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
+  		// Working plane
   		plane = new THREE.Mesh( new THREE.PlaneGeometry( 840, 450, 100, 100 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } ) );
 		plane.visible = false;
 		scene.add(plane);
-		scene.add(plane2);
+		
+		// The visible print bed.
+		var plane2 = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
+  		scene.add(plane2);
   	}
 
 

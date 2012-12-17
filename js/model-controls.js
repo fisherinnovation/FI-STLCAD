@@ -240,16 +240,12 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 		var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
 		var intersects = ray.intersectObjects(objects);
 		
-		console.log(intersects);
-		
 		if (intersects.length > 0) {
 			//_this.enabled = false;
 
 			SELECTED = intersects[0].object;
 			
 			var intersects = ray.intersectObject(plane);
-			console.log(intersects);
-			
 			offset.copy(intersects[0].point).subSelf(plane.position);
 		}
 		
@@ -280,7 +276,6 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 
 		if(SELECTED) {
 			var intersects = ray.intersectObject(plane);
-			console.log(intersects[0].point.subSelf(offset));
 			SELECTED.position.copy(intersects[0].point.subSelf(offset));
 			return;
 		}
