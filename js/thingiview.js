@@ -146,16 +146,15 @@ Thingiview = function(containerId) {
 	
 	    testCanvas = document.createElement('canvas');
 	    
+	    // Check for WebGL compatibility
 	    try {
 	    	if (testCanvas.getContext('experimental-webgl')) {
 	      		log("Passed WebGL detection!");
-	        	
-	        	// showPlane = false;
-	        	
 	        	isWebGl = true;
 	        	
 	        	renderer = new THREE.WebGLRenderer({antialias: true});
 	        	renderer.gammaOutput = true;
+	        	
 	        	// renderer = new THREE.CanvasRenderer();
 	      	} else {
 	        	renderer = new THREE.CanvasRenderer();
@@ -473,8 +472,8 @@ Thingiview = function(containerId) {
 		scene.add(plane);
 		
 		// The visible print bed.
-		var plane2 = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
-  		scene.add(plane2);
+		var visiblePlane = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
+  		scene.add(visiblePlane);
   	}
 
 
@@ -482,10 +481,10 @@ Thingiview = function(containerId) {
     	if (scene && geometry) {
       		if (objectMaterial == 'wireframe') {
         		// material = new THREE.MeshColorStrokeMaterial(objectColor, 1, 1);
-        		material = new THREE.MeshBasicMaterial({color:objectColor,wireframe:true});
+        		material = new THREE.MeshBasicMaterial({ color:objectColor, wireframe:true });
 	      	} else {
 	        	if (isWebGl) {
-	          		material = new THREE.MeshPhongMaterial({color:objectColor});
+	          		material = new THREE.MeshPhongMaterial({ color:objectColor });
 		          	// material = new THREE.MeshColorFillMaterial(objectColor);
 		          	// material = new THREE.MeshLambertMaterial({color:objectColor});
 		          	//material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading});
@@ -498,22 +497,22 @@ Thingiview = function(containerId) {
 
 	      	// scene.removeObject(object);      
 	
-	      	if (object) {
+	      	//if (object) {
 	        	// shouldn't be needed, but this fixes a bug with webgl not removing previous object when loading a new one dynamically
-	        	object.materials = [new THREE.MeshBasicMaterial({color:0xffffff, opacity:0})];
+	        	//object.materials = [new THREE.MeshBasicMaterial({color:0xffffff, opacity:0})];
 	
-	        	scene.remove(object);
+	        	//scene.remove(object);
 	        	// object.geometry = geometry;
 	        	// object.materials = [material];
-	      	}
+	      	//}
 	      
-	      	scope.centerModel();
-	      	scope.centerCamera();
+	      	//scope.centerModel();
+	      	//scope.centerCamera();
 	
 	      	object = new THREE.Mesh(geometry, material);
 	  		scene.add(object);
 	  		
-	  		objects.push(object);
+	  		objects.push(object); // Add to the list of active objects
 	  		
 	       	if (objectMaterial != 'wireframe') {
 	       	 	object.overdraw = true;

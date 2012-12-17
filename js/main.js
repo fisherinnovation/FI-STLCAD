@@ -19,7 +19,6 @@ function init() {
 	loadFileList();
   	loadDefaultModel();
   	initFileDrop();			// Setup file drag and drop actions.
-	//initAjaxForm(); 		// Setup Ajax for handelers.
   	
   	// Show file list when mouse is close enough..
   	$(document).mousemove(function(e){
@@ -153,7 +152,6 @@ function displayBuildInformation() {
 	div.style.position = "absolute";
 	div.style.left = "10px";
 	div.style.bottom = "50px";
-	//div.style.background = "red";
 	div.style.color = "white";
 	div.style.zIndex = 10000;
 	div.innerHTML = "Build " + appVersion;
