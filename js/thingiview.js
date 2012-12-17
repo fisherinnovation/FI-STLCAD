@@ -183,6 +183,10 @@ Thingiview = function(containerId) {
 	
 		// Use THREEx to monitor the window resize events and update the renderer
 		THREEx.WindowResize(renderer, camera);
+		
+		// Set the initial rotation and camera angles.
+		scope.setRotation(rotate);
+		scope.centerCamera();
 	
 	    // Render Scene
 	    setInterval( function () {
@@ -388,11 +392,13 @@ Thingiview = function(containerId) {
 
   	this.loadArray = function(array) {
 	    log("Loading JSON STL data...");
+	    
 	    geometry = new STLGeometry(array);
 	    loadObjectGeometry();
     
-	    scope.setRotation(rotate);
-	    scope.centerCamera();
+	    //scope.setRotation(rotate);
+	    //scope.centerCamera();
+	    
 	    log("Finished loading " + geometry.faces.length + " faces from STL model.");
   	}
 

@@ -274,12 +274,6 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 
 		var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
 
-		// Check if an intersection with a visible object was made.
-		//if (intersects.length > 0) {
-		//	var obj = intersects[0].object;
-		//	obj.material.color.setHex(0xff0000);
-		//}
-
 		if(SELECTED) {
 			var intersects = ray.intersectObject(plane);
 			SELECTED.position.copy(intersects[0].point.subSelf(offset));
@@ -295,9 +289,9 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 				INTERSECTED = intersects[ 0 ].object;
 				INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
 				
+				// Update the intersected objects color to alert the user
 				INTERSECTED.material.color.setHex(0xFF9999);
-				console.log(INTERSECTED.currentHex);
-
+				
 				plane.position.copy( INTERSECTED.position );
 				plane.lookAt( camera.position );
 			}
