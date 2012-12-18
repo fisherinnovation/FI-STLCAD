@@ -9,6 +9,9 @@ var fileListOpen = false;
 var activeModel;
 var rotating = false;
 
+var thingiview;
+var _propertiesSidebar;
+
 function init() {
 	// You may want to place these lines inside an onload handler
   	//CFInstall.check({
@@ -35,7 +38,16 @@ function init() {
   	// Display the current build information.
   	displayBuildInformation();
   	
-  	// Custom context menu
+  	initContextMenu();
+  	
+  	// Model Viewer
+  	thingiview = new Thingiview("viewer");
+  	thingiview.initScene();
+}
+
+
+function initContextMenu() {
+	// Custom context menu
   	$(document).bind("contextmenu", function(event) { 
 	    event.preventDefault();
 	    $(".context-menu").css({top: event.pageY + "px", left: event.pageX + "px"});
@@ -43,6 +55,8 @@ function init() {
 	}).bind("click", function(event) {
 	    $("div.context-menu").fadeOut(250);
 	});
+	
+	// Setup mouse events.
 }
 
 
@@ -161,17 +175,6 @@ function openGCodeFromText(gCode) {
   	thingiview.addObject(new THREE.Mesh(object, new THREE.MeshBasicMaterial({color:'0xffffff',wireframe:true})));
 }
 
-function onControlsRotationButtonClick(e) {
-	if(rotating) {
-		rotating = false;
-		$('#controls .rotation-button').html('ROTATION OFF');
-		thingiview.setRotation(false);
-	} else {
-		rotating = true;
-		$('#controls .rotation-button').html('ROTATION ON');
-		thingiview.setRotation(true);
-	}
-}
 
 function onNavSTLDeleteButtonClick(e) {
 	var classnames = $(this).attr('class').split(' ');
@@ -273,41 +276,8 @@ function onViewerClick(e) {
 
 
 function loadDefaultModel() {
-	thingiview = new Thingiview("viewer");
-  	//thingiview.setObjectColor('#C0D8F0');
-  	thingiview.initScene();
-  	// thingiview.setShowPlane(true);
-  	
-  	$.getJSON('objects/demo.json', function(data) {
+	$.getJSON('objects/demo.json', function(data) {
   		activeModel = 'demo.json';
 		thingiview.loadArray(eval(data));
 	});
-}
-
-
-/**
- * Updates the selected models position in the properties sidebar.
- * 
- * @param	x:
- * @param	y:
- * @param	z: 
- */
-function updateModelPositionProperties(x, y, z) {
-	$('#model-properties .x-val').val(x);
-	$('#model-properties .y-val').val(y);
-	$('#model-properties .z-val').val(z);
-}
-
-
-/**
- * Updates the selected models scale in the properties sidebar.
- * 
- * @param	x:
- * @param	y:
- * @param	z: 
- */
-function updateModelScaleProperties(x, y, z) {
-	$('#model-properties .x-scale').val(x);
-	$('#model-properties .y-scale').val(y);
-	$('#model-properties .z-scale').val(z);
 }

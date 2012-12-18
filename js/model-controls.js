@@ -2,7 +2,7 @@
  * @author Eberhard Graether / http://egraether.com/
  */
 
-THREE.ModelControls = function (thingiview, object, domElement) {
+THREE.ModelControls = function (thingiview, object, domElement, propertiesSidebar) {
 	THREE.EventTarget.call(this);
 
 	var _this = this,
@@ -275,8 +275,8 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			_selectedObject.material.color.setHex(0xFF9999);
 			
 			// Update the properties display with the new position and scale vector.
-			updateModelPositionProperties(_selectedObject.position.x, _selectedObject.position.y, _selectedObject.position.z);
-			updateModelScaleProperties(_selectedObject.scale.x, _selectedObject.scale.y, _selectedObject.scale.z);
+			propertiesSidebar.updateModelPositionProperties(_selectedObject.position.x, _selectedObject.position.y, _selectedObject.position.z);
+			propertiesSidebar.updateModelScaleProperties(_selectedObject.scale.x, _selectedObject.scale.y, _selectedObject.scale.z);
 			
 			var intersects = ray.intersectObject(plane);
 			offset.copy(intersects[0].point).subSelf(plane.position);
@@ -287,8 +287,8 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 				objects[i].material.color.setHex(thingiview.getObjectColor());
 			}
 			
-			updateModelPositionProperties('', '', '');
-			updateModelScaleProperties('', '', '');
+			propertiesSidebar.updateModelPositionProperties('', '', '');
+			propertiesSidebar.updateModelScaleProperties('', '', '');
 		}
 		
 		// Scene manipulation
@@ -332,8 +332,8 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 				SELECTED.position.copy(intersects[0].point.subSelf(offset));
 				
 				// Update the properties display with the new position vector.
-				updateModelPositionProperties(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
-				updateModelScaleProperties(SELECTED.scale.x, SELECTED.scale.y, SELECTED.scale.z);
+				propertiesSidebar.updateModelPositionProperties(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
+				propertiesSidebar.updateModelScaleProperties(SELECTED.scale.x, SELECTED.scale.y, SELECTED.scale.z);
 				
 				return;
 			}

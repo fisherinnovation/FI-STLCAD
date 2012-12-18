@@ -46,6 +46,8 @@ Thingiview = function(containerId) {
   	var backgroundColor 	= '#606060';
   	var objectMaterial 		= 'solid';
   	
+  	var _propertiesSidebar;
+  	
   	var objectColor 		= 0xC0D8F0;
   	
   	var showPlane 			= true;
@@ -193,8 +195,11 @@ Thingiview = function(containerId) {
 	    stats.domElement.style.left      = '5px';
 	    container.appendChild(stats.domElement);
 	    
+	    // Properties Sidebar
+  		_propertiesSidebar = new PropertiesSidebar();
+	    
 	    // Controls
-	    controls = new THREE.ModelControls(this, camera, renderer.domElement);
+	    controls = new THREE.ModelControls(this, camera, renderer.domElement, _propertiesSidebar);
 	    controls.zoomSpeed = 0.08;
 	    controls.dynamicDampingFactor = 0.40;
 	
@@ -204,8 +209,8 @@ Thingiview = function(containerId) {
 		// Set the initial rotation and camera angles.
 		scope.setRotation(rotate);
 		scope.centerCamera();
-	
-	    // Render Scene
+		
+		// Render Scene
 	    setInterval( function () {
 		    stats.begin();	// https://github.com/mrdoob/stats.js/
 		    sceneLoop();
