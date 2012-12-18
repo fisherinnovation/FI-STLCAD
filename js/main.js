@@ -35,7 +35,14 @@ function init() {
       	} else {
       		//hideFileList();
       	}
-    }); 
+    });
+    
+    // Disable mobile page scrolling
+    $(document).bind('touchmove', function (e) { 
+	    if (e.target === document.documentElement) {
+	        e.preventDefault(); 
+	    }
+	});
   	
   	// UI Click Events
   	$('#viewer').bind('click', onViewerClick);
