@@ -1,13 +1,13 @@
 * {
 	margin:0;
 	padding:0;
-	overflow:hidden;
 }
 
 body {
 	min-width:800px;
 	padding:0 !important;
 	margin:0 !important;
+	overflow:hidden;
 }
 
 legend {

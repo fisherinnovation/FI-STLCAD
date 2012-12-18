@@ -11,10 +11,10 @@ var rotating = false;
 
 function init() {
 	// You may want to place these lines inside an onload handler
-  	CFInstall.check({
-    	mode: "inline", // the default
-    	node: "prompt"
-  	});
+  	//CFInstall.check({
+    //	mode: "inline", // the default
+    //	node: "prompt"
+  	//});
 	
 	loadFileList();
   	loadDefaultModel();

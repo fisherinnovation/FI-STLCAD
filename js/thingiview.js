@@ -189,7 +189,8 @@ Thingiview = function(containerId) {
 	    stats = new Stats();
 	    stats.setMode(0);
 	    stats.domElement.style.position  = 'absolute';
-	    stats.domElement.style.top       = '0px';
+	    stats.domElement.style.top       = '45px';
+	    stats.domElement.style.left      = '5px';
 	    container.appendChild(stats.domElement);
 	    
 	    // Controls
@@ -505,13 +506,13 @@ Thingiview = function(containerId) {
 	 */
   	function loadPlaneGeometry() {
   		// Working plane
-  		plane = new THREE.Mesh( new THREE.PlaneGeometry( 840, 450, 100, 100 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } ) );
+  		plane = new THREE.Mesh(new THREE.PlaneGeometry(840, 450, 100, 100), new THREE.MeshBasicMaterial({ color:0x000000, opacity:0.25, transparent:true, wireframe:true }));
 		plane.visible = false;
 		scene.add(plane);
 		
 		// The visible print bed.
 		var visiblePlane = new Grid(840, 450, 10, new THREE.LineBasicMaterial({ color:0x111111, linewidth:1 }));
-  		scene.add(visiblePlane);
+		scene.add(visiblePlane);
   	}
 
 
