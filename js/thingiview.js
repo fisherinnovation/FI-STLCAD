@@ -45,7 +45,7 @@ Thingiview = function(containerId) {
   	var rotate 				= false;
   	var backgroundColor 	= '#606060';
   	var objectMaterial 		= 'solid';
-  	var objectColor 		= 0xffffff;
+  	var objectColor 		= 0xC0D8F0;
   	var showPlane 			= true;
   	var isWebGl 			= false;
 
@@ -525,20 +525,6 @@ Thingiview = function(containerId) {
 	          		material = new THREE.MeshLambertMaterial({color:objectColor, shading: THREE.FlatShading, wireframe:false, overdraw:true});
 	        	}
 	      	}
-
-	      	// scene.removeObject(object);      
-	
-	      	//if (object) {
-	        	// shouldn't be needed, but this fixes a bug with webgl not removing previous object when loading a new one dynamically
-	        	//object.materials = [new THREE.MeshBasicMaterial({color:0xffffff, opacity:0})];
-	
-	        	//scene.remove(object);
-	        	// object.geometry = geometry;
-	        	// object.materials = [material];
-	      	//}
-	      
-	      	//scope.centerModel();
-	      	//scope.centerCamera();
 	
 	      	object = new THREE.Mesh(geometry, material);
 	  		scene.add(object);
