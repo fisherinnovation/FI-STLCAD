@@ -259,11 +259,17 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 		var intersects = ray.intersectObjects(objects);
 		
 		// Check if an intersection with a visible object was made.
-		if (intersects.length > 0) {
-			// Mark the selected object
+		if(intersects.length > 0) {
 			SELECTED = intersects[0].object;
 			_selectedObject = intersects[0].object;
 			
+			var l = objects.length;
+			for(var i = 0; i < l; i++) {
+				objects[i].material.color.setHex(thingiview.getObjectColor());
+			}
+			//thingiview.setObjectColor(thingiview.getObjectColor());
+			
+			// Mark the selected object
 			_selectedObject.material.color.setHex(0xFF9999);
 			
 			var intersects = ray.intersectObject(plane);

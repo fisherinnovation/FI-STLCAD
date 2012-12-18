@@ -45,7 +45,9 @@ Thingiview = function(containerId) {
   	var rotate 				= false;
   	var backgroundColor 	= '#606060';
   	var objectMaterial 		= 'solid';
+  	
   	var objectColor 		= 0xC0D8F0;
+  	
   	var showPlane 			= true;
   	var isWebGl 			= false;
 
@@ -89,6 +91,11 @@ Thingiview = function(containerId) {
 	 * Returns a refernce to the active controls. 
 	 */
 	this.getControls = function() { return controls; }
+	
+	/**
+	 * Returns the default object color.
+	 */
+	this.getObjectColor = function() { return objectColor; }
 	
 	/**
 	 * Levels an object on the build platform (aka. the plane). 
