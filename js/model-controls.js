@@ -262,8 +262,12 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		
 		// Check if an intersection with a visible object was made.
 		if(intersects.length > 0) {
+			
 			SELECTED = intersects[0].object;
 			_selectedObject = intersects[0].object;
+			
+			// Pass the selected object to the main scene class.
+			thingiview.setSelectedObject(_selectedObject);
 			
 			var l = objects.length;
 			for(var i = 0; i < l; i++) {
@@ -440,7 +444,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	
 	
 	
-	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+	//this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 	this.domElement.addEventListener( 'mousemove', mousemove, false );
 	this.domElement.addEventListener( 'mousedown', mousedown, false );
 	this.domElement.addEventListener( 'mouseup', mouseup, false );

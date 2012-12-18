@@ -47,6 +47,7 @@ Thingiview = function(containerId) {
   	var objectMaterial 		= 'solid';
   	
   	var _propertiesSidebar;
+  	var _selectedObject = null;
   	
   	var objectColor 		= 0xC0D8F0;
   	
@@ -64,40 +65,48 @@ Thingiview = function(containerId) {
   	var geometry;
   	var testCanvas;
 
+
 	/**
 	 * Returns a refernce to the active scene. 
 	 */
 	this.getScene = function() { return scene; }
+	
 	
 	/**
 	 * Returns a refernce to the active projector. 
 	 */
 	this.getProjector = function() { return projector; }
 	
+	
 	/**
 	 * Returns a reference to the active camera. 
 	 */
 	this.getCamera = function() { return camera; }
+	
 	
 	/**
 	 * Returns a refernce to the active objects. 
 	 */
 	this.getObjects = function() { return objects; }
 	
+	
 	/**
 	 * Returns a reference to the active plane. 
 	 */
 	this.getPlane = function() { return plane; }
+	
 	
 	/**
 	 * Returns a refernce to the active controls. 
 	 */
 	this.getControls = function() { return controls; }
 	
+	
 	/**
 	 * Returns the default object color.
 	 */
 	this.getObjectColor = function() { return objectColor; }
+	
 	
 	/**
 	 * Levels an object on the build platform (aka. the plane). 
@@ -113,11 +122,48 @@ Thingiview = function(containerId) {
 	this.removeObject = function() {
 		scene.remove(object);
 	}
+	
+	
+	/**
+	 * Removes the selected object from the scene. 
+	 */
+	this.removeSelectedObject = function() {
+		scene.remove(_selectedObject);
+		_selectedObject = null;	
+	}
+	
+	
+	/**
+	 * Removes all object from the scene. 
+	 */
+	this.removeAllObjects = function() {
+		var l = objects.length;
+		for(var i = 0; i < l; i++) {
+			scene.remove(objects[i]);
+		}
+		
+		_selectedObject = null;
+		//object = null;
+		objects = [];
+	}
+	
+	
+	/**
+	 * Sets the current selected object in the scene.
+	 * 
+	 * @param	object: 
+	 */
+	this.setSelectedObject = function(object) {
+		_selectedObject = object;
+	}
+	
+	
 	this.addObject = function(obj) {
 		scene.remove(object);
 		object = obj;
 		scene.add(object);
 	}
+
 
   	this.initScene = function() {
     	container.style.position = 'relative';

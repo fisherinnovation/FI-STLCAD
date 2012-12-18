@@ -26,4 +26,14 @@ PropertiesSidebar = function() {
 		$('#model-properties .y-scale').val(y);
 		$('#model-properties .z-scale').val(z);
 	}
+	
+	
+	/**
+	 * Appends a new model to the list of displayed models.
+	 * 
+	 * @param	objectID: The ID of the model object. 
+	 */
+	this.addModelToDisplayedModelsList = function(objectID) {
+		
+	}
 }

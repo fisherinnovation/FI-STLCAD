@@ -10,7 +10,8 @@ var activeModel;
 var rotating = false;
 
 var thingiview;
-var _propertiesSidebar;
+var _navigation;
+var _contextMenu;
 
 function init() {
 	// You may want to place these lines inside an onload handler
@@ -19,8 +20,7 @@ function init() {
     //	node: "prompt"
   	//});
 	
-	loadFileList();
-  	loadDefaultModel();
+	loadDefaultModel();
   	initFileDrop();			// Setup file drag and drop actions.
     
     // Disable mobile page scrolling
@@ -33,30 +33,22 @@ function init() {
   	// UI Click Events
   	$('#viewer').bind('click', onViewerClick);
   	$('#stl-load').bind('keydown', onSTLURLKeyDown); 
-  	$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
+  	//$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
   	
   	// Display the current build information.
   	displayBuildInformation();
   	
-  	initContextMenu();
-  	
   	// Model Viewer
   	thingiview = new Thingiview("viewer");
   	thingiview.initScene();
-}
-
-
-function initContextMenu() {
-	// Custom context menu
-  	$(document).bind("contextmenu", function(event) { 
-	    event.preventDefault();
-	    $(".context-menu").css({top: event.pageY + "px", left: event.pageX + "px"});
-	    $("div.context-menu").fadeIn(250);
-	}).bind("click", function(event) {
-	    $("div.context-menu").fadeOut(250);
-	});
-	
-	// Setup mouse events.
+  	
+  	// Top Navigation
+  	_navigation = new Navigation(thingiview);
+  	_navigation.init();
+  	_navigation.loadFileList();
+  	
+  	// Context Navigation
+  	_contextMenu = new ContextMenu(thingiview);
 }
 
 
@@ -123,9 +115,7 @@ function initFileDrop() {
 	        // response is the data you got back from server in JSON format.
 	        console.log('Upload Finished! ' + response['location']);
 	        
-	        //$("#progressbar").fadeOut();
-	        
-	        loadFileList();
+	        _navigation.loadFileList();
 	        
 	        $.getJSON('objects/' + response['location'] + '.json', function(data) {
 	       		activeModel = response['location'];
@@ -169,69 +159,13 @@ function displayBuildInformation() {
 }
 
 
+/*
 function openGCodeFromText(gCode) {
   	object = createObjectFromGCode(gCode);
   	thingiview.removeObject();
   	thingiview.addObject(new THREE.Mesh(object, new THREE.MeshBasicMaterial({color:'0xffffff',wireframe:true})));
 }
-
-
-function onNavSTLDeleteButtonClick(e) {
-	var classnames = $(this).attr('class').split(' ');
-	var filename = classnames[3];
-	filename = filesJSON[filename].split('.');
-	filename = filename[0];
-	
-	$.getJSON('php/delete.php?file=' + filename, function(data) {
-		loadFileList();
-		loadDefaultModel();
-	});
-}
-
-function loadFileList() {
-	$.getJSON(fileListURL, function(data) {
-		filesJSON = data;
-		var html = '';
-	  	$.each(data, function(key, val) {
-	  		// Place file into document.
-	  		if(val == 'demo.json') {
-	  			val = val.split('.');
-	  			val = val[0];
-	  			html += '<tr><td><span class="filename">' + val + '</span></td><td><a class="btn btn-inverse load ' + key + '">Load Model</a></td></tr>';
-	  		} else {
-	  			val = val.split('.');
-	  			val = val[0];
-	  			html += '<tr><td><span class="filename" contenteditable>' + val + '</span></td><td><a class="btn btn-danger delete ' + key + '">Delete</a> <a class="btn btn-inverse load ' + key + '">Load Model</a></td></tr>';
-	  		}
-	  	});
-	  	
-	  	$('#file-list').html(html);
-	  	$('#file-list .load').bind('click', onLoadSTLFromListButtonClick);
-	  	$('#file-list .delete').bind('click', onNavSTLDeleteButtonClick);
-	 });
-}
-
-function onDownloadSTLButtonClick(e) {
-	if(activeModel == '') return;
-	
-	// Stip the JSON from filename.
-	var filename = activeModel.split('.');
-	
-	// Download the STL 
-	window.open('objects/' + filename[0] + '.stl', '_blank');
-}
-
-function onLoadSTLFromListButtonClick(e) {
-	var classnames = $(this).attr('class').split(' ');
-	var modelID = classnames[3];
-	
-	$.getJSON('objects/' + filesJSON[modelID], function(data) {
-		activeModel = filesJSON[modelID];
-		thingiview.loadArray(eval(data));
-	});
-	
-	loadFileList();
-}
+*/
 
 
 function onSTLURLKeyDown(e) {
