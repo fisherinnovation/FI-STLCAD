@@ -324,7 +324,7 @@ function onNavSTLLoadButtonClick(e) {
 
 function loadDefaultModel() {
 	thingiview = new Thingiview("viewer");
-  	thingiview.setObjectColor('#C0D8F0');
+  	//thingiview.setObjectColor('#C0D8F0');
   	thingiview.initScene();
   	// thingiview.setShowPlane(true);
   	
