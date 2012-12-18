@@ -37,8 +37,8 @@
 			                <li class="dropdown">
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
-			                  		<li class="nav-header">Load Model</li>
-				                    <li><a>Top</a></li>
+			                  		<!--<li class="nav-header">Load Model</li>-->
+				                    <li><a href="#" id="nav-stl-load">Load STL</a></li>
 			                  	</ul>
 			                </li>
 			                
@@ -51,14 +51,17 @@
 									<li><a onclick="thingiview.setCameraView('bottom');">Bottom</a></li>
 									<li><a onclick="thingiview.setCameraView('diagonal');">Diagonal</a></li>
 									<li class="divider"></li>
+									<li><a onclick="thingiview.levelObject();">Level Objects on Build Platform</a></li>
+									<li><a onclick="thingiview.setObjectMaterial('soild');">Soild</a></li>
+									<li><a onclick="thingiview.setObjectMaterial('wireframe');">Wireframe</a></li>
 			                  	</ul>
 			                </li>
 			                
 			                <li class="dropdown">
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Export <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
-			                  		<li><a>Export STL</a></li>
-				                    <li><a>Export GCode</a></li>
+			                  		<li><a href="#" id="nav-download-stl">Export STL</a></li>
+				                    <li><a href="#" id="nav-generate-gcode">Export GCode</a></li>
 			                  	</ul>
 			                </li>
 			                
@@ -75,20 +78,6 @@
     </div>
     
 	<div id="prompt"></div>
-	
-	<div id="controls">
-		<a class="rotation-button btn btn-inverse">ROTATION OFF</a>
-		
-		<a class="btn btn-inverse" onclick="thingiview.setObjectMaterial('wireframe');">WIREFRAME</a> 
-		<a class="btn btn-inverse" onclick="thingiview.setObjectMaterial('solid');">SOLID</a>
-		<a class="btn btn-inverse" onclick="thingiview.levelObject();">LEVEL ON BUILD PLATFORM</a>
-		  
-		<div style="float:right;padding-right:30px;">
-			<a class="btn btn-inverse" id="nav-stl-load">LOAD MODEL</a>
-			<a class="btn btn-success" id="nav-download-stl">DOWNLOAD STL</a>
-			<a class="btn btn-warning" id="nav-generate-gcode">GENERATE GCODE</a>
-		</div>
-	</div>
 	
 	<div id="viewer"></div>
 	

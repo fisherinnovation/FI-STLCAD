@@ -26,16 +26,8 @@ legend {
 	clear:both;
 }
 
-#controls {
-	position:absolute;
-	bottom:0;
-	background:none;
-	z-index:999;
-	background: rgba(0, 0, 0, 0.6);
-	width:100%;
-	padding:10px;
-	color:#EFEFEF;
-	min-width:800px;
+.navbar {
+	opacity:0.7;
 }
   	
 #viewer {

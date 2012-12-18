@@ -158,7 +158,7 @@ function displayBuildInformation() {
 	var div = document.createElement("div");
 	div.style.position = "absolute";
 	div.style.left = "10px";
-	div.style.bottom = "50px";
+	div.style.bottom = "5px";
 	div.style.color = "white";
 	div.style.zIndex = 10000;
 	div.innerHTML = "Build " + appVersion;
