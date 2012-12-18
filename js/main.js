@@ -34,6 +34,15 @@ function init() {
   	
   	// Display the current build information.
   	displayBuildInformation();
+  	
+  	// Custom context menu
+  	$(document).bind("contextmenu", function(event) { 
+	    event.preventDefault();
+	    $(".context-menu").css({top: event.pageY + "px", left: event.pageX + "px"});
+	    $("div.context-menu").fadeIn(250);
+	}).bind("click", function(event) {
+	    $("div.context-menu").fadeOut(250);
+	});
 }
 
 
