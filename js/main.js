@@ -1,6 +1,6 @@
 $(document).ready(init);
 
-var appVersion = '0.0.3 unstable';
+var appVersion = '0.0.4 unstable';
 var stlLoadDialog = false;
 var generateGCodeDialog = false;
 var fileListURL = 'php/files.php';
@@ -19,23 +19,6 @@ function init() {
 	loadFileList();
   	loadDefaultModel();
   	initFileDrop();			// Setup file drag and drop actions.
-  	
-  	// Show file list when mouse is close enough..
-  	$(document).mousemove(function(e){
-  		if(!fileListOpen) {
-  			if(e.pageX > $(window).width() - 50) {
-      			showFileList();
-      		}
-      	}
-      	
-      	if(fileListOpen) {
-      		if(e.pageX < $(window).width() - 510) {
-      			hideFileList();
-      		}
-      	} else {
-      		//hideFileList();
-      	}
-    });
     
     // Disable mobile page scrolling
     $(document).bind('touchmove', function (e) { 
@@ -46,10 +29,7 @@ function init() {
   	
   	// UI Click Events
   	$('#viewer').bind('click', onViewerClick);
-  	$('#controls #nav-stl-load').bind('click', onNavSTLLoadButtonClick);
-  	$('#controls .rotation-button').bind('click', onControlsRotationButtonClick);
   	$('#stl-load').bind('keydown', onSTLURLKeyDown); 
-  	$('#nav-generate-gcode').bind('click', onGenerateGCodeButtonClick);
   	$('#nav-download-stl').bind('click', onDownloadSTLButtonClick);
   	
   	// Display the current build information.
@@ -122,8 +102,6 @@ function initFileDrop() {
 	        
 	        //$("#progressbar").fadeOut();
 	        
-	        $('#stl-load').fadeOut(250)
-	        
 	        loadFileList();
 	        
 	        $.getJSON('objects/' + response['location'] + '.json', function(data) {
@@ -161,6 +139,7 @@ function displayBuildInformation() {
 	div.style.bottom = "5px";
 	div.style.color = "white";
 	div.style.zIndex = 10000;
+	div.style.opacity = 0.3;
 	div.innerHTML = "Build " + appVersion;
 	
 	document.body.appendChild(div);
@@ -171,11 +150,6 @@ function openGCodeFromText(gCode) {
   	object = createObjectFromGCode(gCode);
   	thingiview.removeObject();
   	thingiview.addObject(new THREE.Mesh(object, new THREE.MeshBasicMaterial({color:'0xffffff',wireframe:true})));
-}
-
-function onGenerateGCodeButtonClick(e) {
-	generateGCodeDialog = true;
-	$('#gcode-options').fadeIn(250);
 }
 
 function onControlsRotationButtonClick(e) {
@@ -211,29 +185,17 @@ function loadFileList() {
 	  		if(val == 'demo.json') {
 	  			val = val.split('.');
 	  			val = val[0];
-	  			html += '<li><span class="filename">' + val + '</span> <a class="btn btn-inverse load ' + key + '">Load Model</a></li>';
+	  			html += '<tr><td><span class="filename">' + val + '</span></td><td><a class="btn btn-inverse load ' + key + '">Load Model</a></td></tr>';
 	  		} else {
 	  			val = val.split('.');
 	  			val = val[0];
-	  			html += '<li><span class="filename" contenteditable>' + val + '</span> <a class="btn btn-danger delete ' + key + '">Delete</a> <a class="btn btn-inverse load ' + key + '">Load Model</a></li>';
+	  			html += '<tr><td><span class="filename" contenteditable>' + val + '</span></td><td><a class="btn btn-danger delete ' + key + '">Delete</a> <a class="btn btn-inverse load ' + key + '">Load Model</a></td></tr>';
 	  		}
 	  	});
 	  	
 	  	$('#file-list').html(html);
-	  	$('#file-list li .load').bind('click', onLoadSTLFromListButtonClick);
-	  	$('#file-list li .delete').bind('click', onNavSTLDeleteButtonClick);
-	  	
-	  	/*
-	  	$('#file-list li .filename').live('focus', function() {
-			before = $(this).html();
-		}).live('blur keyup paste', function() { 
-		  	if (before != $(this).html()) { 
-		  		$(this).trigger('change'); 
-		  	}
-		});
-		
-		$('#file-list li .filename').live('change', function() {console.log('changed')});
-		*/
+	  	$('#file-list .load').bind('click', onLoadSTLFromListButtonClick);
+	  	$('#file-list .delete').bind('click', onNavSTLDeleteButtonClick);
 	 });
 }
 
@@ -247,28 +209,6 @@ function onDownloadSTLButtonClick(e) {
 	window.open('objects/' + filename[0] + '.stl', '_blank');
 }
 
-function hideFileList() {
-	fileListOpen = false;
-	
-	$('#file-selector').animate({
-		right: '-510px'
-	  }, 500, function() {
-	    // Animation complete.
-	    loadFileList();
-	});
-}
-
-function showFileList() {
-	 fileListOpen = true;
-	 
-	$('#file-selector').animate({
-		right: '0px'
-	  }, 500, function() {
-	    // Animation complete.
-		loadFileList();
-	});
-}
-
 function onLoadSTLFromListButtonClick(e) {
 	var classnames = $(this).attr('class').split(' ');
 	var modelID = classnames[3];
@@ -280,6 +220,7 @@ function onLoadSTLFromListButtonClick(e) {
 	
 	loadFileList();
 }
+
 
 function onSTLURLKeyDown(e) {
 	url = $('#stl-url').val();
@@ -296,6 +237,7 @@ function validateURL(textval) {
   return urlregex.test(textval);
 }
 
+
 function loadThingiverseURL(url) {
 	console.log('Loading Model: ' + url);
 	
@@ -307,27 +249,19 @@ function loadThingiverseURL(url) {
 	$('#thingiverse-load').hide();
 }
 
+
 function loadSTLURL(url) {
 	console.log('Loading Model: ' + url);
 	
 	thingiview.loadJSON("../php/json.php?file=" + url);
-	stlLoadDialog = false;
-	$('#stl-load').hide();
 }
 
-function onControlsClick(e) {
-	if(stlLoadDialog) $('#thingiverse-load').hide();
-}
+
 
 function onViewerClick(e) {
-	if(generateGCodeDialog) $('#gcode-options').fadeOut(250);
-	if(stlLoadDialog) $('#stl-load').fadeOut(250);
+	//
 }
 
-function onNavSTLLoadButtonClick(e) {
-	stlLoadDialog = true;
-	$('#stl-load').fadeIn(250); 
-}
 
 function loadDefaultModel() {
 	thingiview = new Thingiview("viewer");
@@ -339,4 +273,32 @@ function loadDefaultModel() {
   		activeModel = 'demo.json';
 		thingiview.loadArray(eval(data));
 	});
+}
+
+
+/**
+ * Updates the selected models position in the properties sidebar.
+ * 
+ * @param	x:
+ * @param	y:
+ * @param	z: 
+ */
+function updateModelPositionProperties(x, y, z) {
+	$('#model-properties .x-val').val(x);
+	$('#model-properties .y-val').val(y);
+	$('#model-properties .z-val').val(z);
+}
+
+
+/**
+ * Updates the selected models scale in the properties sidebar.
+ * 
+ * @param	x:
+ * @param	y:
+ * @param	z: 
+ */
+function updateModelScaleProperties(x, y, z) {
+	$('#model-properties .x-scale').val(x);
+	$('#model-properties .y-scale').val(y);
+	$('#model-properties .z-scale').val(z);
 }

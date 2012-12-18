@@ -28,11 +28,11 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	this.maxDistance = Infinity;
 	
 	// Keyboard interaction
-	this.keys = [ 
-					65 /*A*/, 
-					83 /*S*/, 
-					68 /*D*/ 
-				];
+	//this.keys = [ 
+	//				65 /*A*/, 
+	//				83 /*S*/, 
+	//				68 /*D*/ 
+	//			];
 
 	// Internals
 	this.target = new THREE.Vector3();
@@ -217,6 +217,7 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			_rotateObject = true;
 		}
 
+		/*
 		if(_state !== STATE.NONE) {
 			return;
 		} else if (key === _this.keys[ STATE.ROTATE ] && !_this.noRotate ) {
@@ -226,6 +227,7 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 		} else if (key === _this.keys[ STATE.PAN ] && !_this.noPan ) {
 			_state = STATE.PAN;
 		}
+		*/
 
 		if (_state == STATE.NONE) {
 			_keyPressed = true;
@@ -272,8 +274,21 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			// Mark the selected object
 			_selectedObject.material.color.setHex(0xFF9999);
 			
+			// Update the properties display with the new position and scale vector.
+			updateModelPositionProperties(_selectedObject.position.x, _selectedObject.position.y, _selectedObject.position.z);
+			updateModelScaleProperties(_selectedObject.scale.x, _selectedObject.scale.y, _selectedObject.scale.z);
+			
 			var intersects = ray.intersectObject(plane);
 			offset.copy(intersects[0].point).subSelf(plane.position);
+		} else {
+			// Nothing was selected, clear all previous selections.
+			var l = objects.length;
+			for(var i = 0; i < l; i++) {
+				objects[i].material.color.setHex(thingiview.getObjectColor());
+			}
+			
+			updateModelPositionProperties('', '', '');
+			updateModelScaleProperties('', '', '');
 		}
 		
 		// Scene manipulation
@@ -315,6 +330,11 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 			} else {
 				var intersects = ray.intersectObject(plane);
 				SELECTED.position.copy(intersects[0].point.subSelf(offset));
+				
+				// Update the properties display with the new position vector.
+				updateModelPositionProperties(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
+				updateModelScaleProperties(SELECTED.scale.x, SELECTED.scale.y, SELECTED.scale.z);
+				
 				return;
 			}
 		}

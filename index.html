@@ -37,8 +37,10 @@
 			                <li class="dropdown">
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
-			                  		<!--<li class="nav-header">Load Model</li>-->
-				                    <li><a href="#" id="nav-stl-load">Load STL</a></li>
+			                  		<li class="nav-header">Import Model</li>
+			                  		<li><a href="#file-selector" data-toggle="modal">Load Model</a></li>
+				                    <li><a href="#stl-load" data-toggle="modal">Load STL</a></li>
+				                    <li><a href="#">Load From Thingiverse</a></li>
 			                  	</ul>
 			                </li>
 			                
@@ -61,7 +63,7 @@
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Export <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
 			                  		<li><a href="#" id="nav-download-stl">Export STL</a></li>
-				                    <li><a href="#" id="nav-generate-gcode">Export GCode</a></li>
+				                    <li><a href="#gcode-options" data-toggle="modal">Export GCode</a></li>
 			                  	</ul>
 			                </li>
 			                
@@ -69,6 +71,9 @@
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
 			                  		<li><a href="https://github.com/fisherinnovation/FI-STLCAD" target="_blank">Project Source (Github)</a></li>
+			                  		<li class="divider"></li>
+			                  		<li><a href="#">STLCAD version 0.0.4 unstable</a></li>
+			                  		<li><a href="https://www.fisherinnovation.com" target="_blank">Created by Fisher Innovation</a></li>
 			                  	</ul>
 			                </li>
 		              </ul>
@@ -81,68 +86,135 @@
 	
 	<div id="viewer"></div>
 	
+	<div id="model-properties">
+		<fieldset>
+		    <h4>Position</h4>
+		    
+		    <label>X</label>
+		    <input class="x-val" type="text" placeholder="">
+		    
+		    <label>Y</label>
+		    <input class="y-val" type="text" placeholder="">
+		    
+		    <label>Z</label>
+		    <input class="z-val" type="text" placeholder="">
+		</fieldset>
+		
+		<a class="btn btn-inverse" onclick="thingiview.levelObject();">Level On Build Platform</a>
+		
+		<fieldset>
+		    <h4>Scale</h4>
+		    
+		    <label>X</label>
+		    <input class="x-scale" type="text" placeholder="">
+		    
+		    <label>Y</label>
+		    <input class="y-scale" type="text" placeholder="">
+		    
+		    <label>Z</label>
+		    <input class="z-scale" type="text" placeholder="">
+		</fieldset>
+		
+		<fieldset>
+		    <h4>Rotation</h4>
+		    
+		    <label>X</label>
+		    <input class="x-rotation" type="text" placeholder="">
+		    
+		    <label>Y</label>
+		    <input class="y-rotation" type="text" placeholder="">
+		    
+		    <label>Z</label>
+		    <input class="z-rotation" type="text" placeholder="">
+		</fieldset>
+	</div>
+	
 	<div id="GCodeStatusDiv"></div>
 	
-	<div id="file-selector">
-		<h1>Model Archive</h1>
-		<ul id="file-list"></ul>
+	<div id="file-selector" class="modal hide fade">
+	  	<div class="modal-header">
+	    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    	<h3>Model Archive</h3>
+	  	</div>
+	  	<div class="modal-body">
+	  		<table id="file-list"></table>
+	  	</div>
+	  	<div class="modal-footer">
+	    	<a href="#" class="btn">Close</a>
+	  	</div>
 	</div>
 	
-	<div id="stl-load">
-		<fieldset>
-		    <legend>Load STL From Web</legend>
-		    <label>STL URL</label>
-		    <input id="stl-url" type="text" placeholder="Place URL Here...">
-		    <span class="help-block">Enter a full url to a STL file hosted on the web.</span>
-	  	</fieldset>
-		
-	  	<legend>Local STL File</legend>
-		<input type="file" name="files[]" multiple>
-		<span class="help-block">Choose a file from your local file system or drag it into this dialog.</span>         
+	<div id="stl-load" class="modal hide fade">
+	  	<div class="modal-header">
+	    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    	<h3>Load STL</h3>
+	  	</div>
+	  	<div class="modal-body">
+	  		<fieldset>
+			    <legend>Load STL From Web</legend>
+			    <label>STL URL </label>
+			    <input id="stl-url" type="text" placeholder="Place URL Here...">
+			    <span class="help-block">Enter a full url to a STL file hosted on the web.</span>
+		  	</fieldset>
+			
+		  	<legend>Local STL File</legend>
+			<input type="file" name="files[]" multiple>
+			<span class="help-block">Choose a file from your local file system or drag it into this dialog.</span>  
+	  	</div>
+	  	<div class="modal-footer">
+	    	<a href="#" class="btn">Close</a>
+	  	</div>
 	</div>
 	
-	<div id="gcode-options">
-		<fieldset>
-		    <legend>GCode Export Configuration</legend>
-		    <span class="help-block">Leave field blank to use default values.</span>
-		    
-		    <label class="checkbox">
-		      <input type="checkbox"> Add Raft
-		    </label>
-		    
-		     <label class="checkbox">
-		      <input type="checkbox"> Add Supports
-		    </label>
-		    
-		    <div class="left">
-			    <label>Infill (%)</label>
-			    <input id="stl-url" type="text" placeholder="10">
+	<div id="gcode-options" class="modal hide fade">
+	  	<div class="modal-header">
+	    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    	<h3>GCode Export Configuration</h3>
+	  	</div>
+	  	<div class="modal-body">
+	  		<fieldset>
+			    <span class="help-block">Leave field blank to use default values.</span>
 			    
-			    <label>Number of Shells</label>
-			    <input id="stl-url" type="text" placeholder="2">
+			    <label class="checkbox">
+			      <input type="checkbox"> Add Raft
+			    </label>
 			    
-			    <label>Layer Height</label>
-			    <input id="stl-url" type="text" placeholder="0.27">
+			     <label class="checkbox">
+			      <input type="checkbox"> Add Supports
+			    </label>
 			    
-			    <label>Extruder Temperautre (&deg;C)</label>
-			    <input id="stl-url" type="text" placeholder="230">
-		    </div>
-		    
-		    <div class="right">
-			    <label>Platform</label>
-			    <input id="stl-url" type="text" placeholder="110">
+			    <div class="left">
+				    <label>Infill (%)</label>
+				    <input id="stl-url" type="text" placeholder="10">
+				    
+				    <label>Number of Shells</label>
+				    <input id="stl-url" type="text" placeholder="2">
+				    
+				    <label>Layer Height</label>
+				    <input id="stl-url" type="text" placeholder="0.27">
+				    
+				    <label>Extruder Temperautre (&deg;C)</label>
+				    <input id="stl-url" type="text" placeholder="230">
+			    </div>
 			    
-			    <label>Extruding Speed</label>
-			    <input id="stl-url" type="text" placeholder="80">
+			    <div class="right">
+				    <label>Platform</label>
+				    <input id="stl-url" type="text" placeholder="110">
+				    
+				    <label>Extruding Speed</label>
+				    <input id="stl-url" type="text" placeholder="80">
+				    
+				    <label>Traveling Speed</label>
+				    <input id="stl-url" type="text" placeholder="100">
+			    </div>
 			    
-			    <label>Traveling Speed</label>
-			    <input id="stl-url" type="text" placeholder="100">
-		    </div>
-		    
-		    <div class="clearfix"></div>
-		    
-		    <a class="btn btn-warning" id="">SLICE</a>
-	  </fieldset>
+			    <div class="clearfix"></div>    
+			</fieldset>
+	  	</div>
+	  	<div class="modal-footer">
+	    	<a href="#" class="btn">Close</a>
+	    	<a class="btn btn-warning" id="">Generate</a>
+	  	</div>
 	</div>
 
 </body>
