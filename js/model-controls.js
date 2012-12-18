@@ -48,7 +48,8 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	var offset = new THREE.Vector3();
 	
 	var INTERSECTED, SELECTED;
-	var controls = thingiview.getControls();
+	var _selectedObject; 						// The selected object
+	var controls = thingiview.getControls();	// Refernce to the controls
 	
 	var _rotateObject = false;
 	var _keyPressed = false,
@@ -261,6 +262,9 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 		if (intersects.length > 0) {
 			// Mark the selected object
 			SELECTED = intersects[0].object;
+			_selectedObject = intersects[0].object;
+			
+			_selectedObject.material.color.setHex(0xFF9999);
 			
 			var intersects = ray.intersectObject(plane);
 			offset.copy(intersects[0].point).subSelf(plane.position);
@@ -283,6 +287,9 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 	function mousemove( event ) {
 		if (!_this.enabled ) return;
 		
+		var preX = mouse.x;
+		var preV = mouse.y;
+		
 		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -295,7 +302,7 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 		if(SELECTED) {
 			// Check if we are to rotate the object or move it.
 			if(_rotateObject) {
-				// Rotation tests
+				// Check for rotation direction.
 				var xAxis = new THREE.Vector3(1,0,0);
 				thingiview.rotateObjectOnAxis(SELECTED, xAxis, Math.PI / 180)
 				return;
@@ -307,25 +314,25 @@ THREE.ModelControls = function (thingiview, object, domElement) {
 		}
 		
 		// Check for intersections.
-		var intersects = ray.intersectObjects( objects );
-		if(intersects.length > 0 ) {
-			if ( INTERSECTED != intersects[ 0 ].object ) {
-				if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+		var intersects = ray.intersectObjects(objects);
+		if(intersects.length > 0) {
+			if (INTERSECTED != intersects[0].object) {
+				if(INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
 
-				INTERSECTED = intersects[ 0 ].object;
-				INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+				INTERSECTED = intersects[0].object;
+				//INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
 				
 				// Update the intersected objects color to alert the user
-				INTERSECTED.material.color.setHex(0xFF9999);
+				//INTERSECTED.material.color.setHex(0xFF9999);
 				
-				plane.position.copy( INTERSECTED.position );
-				plane.lookAt( camera.position );
+				plane.position.copy(INTERSECTED.position);
+				plane.lookAt(camera.position);
 			}
 
 			//container.style.cursor = 'pointer';
 
 		} else {
-			if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+			//if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
 			INTERSECTED = null;
 			//container.style.cursor = 'auto';
 		}
