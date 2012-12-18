@@ -90,6 +90,16 @@ Thingiview = function(containerId) {
 	 */
 	this.getControls = function() { return controls; }
 	
+	/**
+	 * Levels an object on the build platform (aka. the plane). 
+	 */
+	this.levelObject = function() {
+		// Loop over all the active objects
+		for(var i = 0; i < objects.length; i++) {
+			var obj = objects[i];
+			obj.position.z = 0; // Reposition on the Z axis
+		}
+	}
 	
 	this.removeObject = function() {
 		scene.remove(object);
