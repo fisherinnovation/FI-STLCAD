@@ -242,7 +242,8 @@ Thingiview = function(containerId) {
 	    container.appendChild(stats.domElement);
 	    
 	    // Properties Sidebar
-  		_propertiesSidebar = new PropertiesSidebar();
+  		_propertiesSidebar = new PropertiesSidebar(this);
+	    _propertiesSidebar.disableObjectControls();
 	    
 	    // Controls
 	    controls = new THREE.ModelControls(this, camera, renderer.domElement, _propertiesSidebar);
@@ -347,7 +348,61 @@ Thingiview = function(containerId) {
 	
 	    scope.onSetRotation();
   	}
+  	
+  	
+  	/**
+	 * Sets the selected objects X postion.
+	 */
+	this.setSelectedXPostion = function(val) { _selectedObject.position.x = val; }
 
+	
+	/**
+	 * Sets the selected objects Y postion.
+	 */
+	this.setSelectedYPostion = function(val) { _selectedObject.position.y = val; }
+	
+	
+	/**
+	 * Sets the selected objects Z postion.
+	 */
+	this.setSelectedZPostion = function(val) { _selectedObject.position.z = val; }
+	
+	
+	/**
+	 * Sets the selected objects X scale.
+	 */
+	this.setSelectedXScale = function(val) { _selectedObject.scale.x = val; }
+
+	
+	/**
+	 * Sets the selected objects Y scale.
+	 */
+	this.setSelectedYScale = function(val) { _selectedObject.scale.y = val; }
+	
+	
+	/**
+	 * Sets the selected objects Z scale.
+	 */
+	this.setSelectedZScale = function(val) { _selectedObject.scale.z = val; }
+
+	
+	/**
+	 * Sets the selected objects X rotation.
+	 */
+	this.setSelectedXRotation = function(val) { _selectedObject.rotation.x = val; }
+
+	
+	/**
+	 * Sets the selected objects Y rotation.
+	 */
+	this.setSelectedYRotation = function(val) { _selectedObject.rotation.y = val; }
+	
+	
+	/**
+	 * Sets the selected objects Z rotation.
+	 */
+	this.setSelectedZRotation = function(val) { _selectedObject.rotation.z = val; }
+	
 
   	this.onSetRotation = function(callback) {
     	if(callback === undefined){

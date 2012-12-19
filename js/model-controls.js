@@ -111,7 +111,8 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 
 		return projection;
 	};
-
+	
+	
 	this.rotateCamera = function () {
 		var angle = Math.acos( _rotateStart.dot( _rotateEnd ) / _rotateStart.length() / _rotateEnd.length() );
 		if ( angle ) {
@@ -281,6 +282,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			// Update the properties display with the new position and scale vector.
 			propertiesSidebar.updateModelPositionProperties(_selectedObject.position.x, _selectedObject.position.y, _selectedObject.position.z);
 			propertiesSidebar.updateModelScaleProperties(_selectedObject.scale.x, _selectedObject.scale.y, _selectedObject.scale.z);
+			propertiesSidebar.updateModelRotationProperties(_selectedObject.rotation.x, _selectedObject.rotation.y, _selectedObject.rotation.z);
 			
 			var intersects = ray.intersectObject(plane);
 			offset.copy(intersects[0].point).subSelf(plane.position);
@@ -293,6 +295,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			
 			propertiesSidebar.updateModelPositionProperties('', '', '');
 			propertiesSidebar.updateModelScaleProperties('', '', '');
+			propertiesSidebar.updateModelRotationProperties('', '', '');
 		}
 		
 		// Scene manipulation
@@ -338,6 +341,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 				// Update the properties display with the new position vector.
 				propertiesSidebar.updateModelPositionProperties(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
 				propertiesSidebar.updateModelScaleProperties(SELECTED.scale.x, SELECTED.scale.y, SELECTED.scale.z);
+				propertiesSidebar.updateModelRotationProperties(SELECTED.rotation.x, SELECTED.rotation.y, SELECTED.rotation.z);
 				
 				return;
 			}
