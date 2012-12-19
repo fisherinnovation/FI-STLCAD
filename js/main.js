@@ -41,6 +41,7 @@ function init() {
   	// Model Viewer
   	thingiview = new Thingiview("viewer");
   	thingiview.initScene();
+  	//thingiview.debugaxis(100);
   	
   	// Top Navigation
   	_navigation = new Navigation(thingiview);

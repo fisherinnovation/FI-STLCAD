@@ -47,7 +47,7 @@ Thingiview = function(containerId) {
   	var objectMaterial 		= 'solid';
   	
   	var _propertiesSidebar;
-  	var _selectedObject = null;
+  	var _selectedObject 	= null;
   	
   	var objectColor 		= 0xC0D8F0;
   	
@@ -64,9 +64,9 @@ Thingiview = function(containerId) {
 
   	var geometry;
   	var testCanvas;
-
-
-	/**
+  	
+  	
+  	/**
 	 * Returns a refernce to the active scene. 
 	 */
 	this.getScene = function() { return scene; }
@@ -251,7 +251,7 @@ Thingiview = function(containerId) {
 	
 		// Use THREEx to monitor the window resize events and update the renderer
 		THREEx.WindowResize(renderer, camera);
-		
+				
 		// Set the initial rotation and camera angles.
 		scope.setRotation(rotate);
 		scope.centerCamera();
@@ -588,6 +588,9 @@ Thingiview = function(containerId) {
 	      	object = new THREE.Mesh(geometry, material);
 	  		scene.add(object);
 	  		
+	  		// Add axis to the object
+	  		addObjectAxis(object, 100);
+	  		
 	  		objects.push(object); // Add to the list of active objects
 	  		
 	       	if (objectMaterial != 'wireframe') {
@@ -603,6 +606,32 @@ Thingiview = function(containerId) {
 	      	//sceneLoop();
 	    }
   	}
+  	
+  	
+  	/**
+  	 * Displays axis on each item.
+  	 * 
+  	 * @param	obj: The object to append axis to.
+  	 * @param	axisLength: The length of the axis.
+  	 */
+  	function addObjectAxis(obj, axisLength){
+		function v(x,y,z) { return new THREE.Vector3(x,y,z); }
+	    
+		/**
+		 * Create axis (point1, point2, colour)
+		 */
+	    function createAxis(p1, p2, color){
+	    	var line, lineGeometry = new THREE.Geometry(),
+			lineMat = new THREE.LineBasicMaterial({color: color, lineWidth: 2});
+			lineGeometry.vertices.push(p1, p2);
+			line = new THREE.Line(lineGeometry, lineMat);
+			obj.add(line);
+		}
+		
+		createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
+		createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
+		createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
+	};
 
 };
 
