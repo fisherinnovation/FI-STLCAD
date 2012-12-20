@@ -118,7 +118,8 @@ Thingiview = function(containerId) {
 		// Loop over all the active objects
 		for(var i = 0; i < objects.length; i++) {
 			var obj = objects[i];
-			obj.position.z = 0; // Reposition on the Z axis
+			//obj.position.z = 0; // Reposition on the Z axis
+			obj.boundingBox.min.z = 0;
 		}
 	}
 	
@@ -423,9 +424,7 @@ Thingiview = function(containerId) {
   	this.setCameraView = function(dir) {  }
   	this.setCameraZoom = function(factor) {  }
 
-  	this.getObjectMaterial = function() {
-    	return objectMaterial;
-  	}
+  	this.getObjectMaterial = function() { return objectMaterial; }
 
   	this.setObjectMaterial = function(type) {
     	objectMaterial = type;
@@ -467,38 +466,44 @@ Thingiview = function(containerId) {
     	scope.newWorker('loadJSON', url);
   	}
   
+  	/**
+  	 * Centers a selected object on the build platform. 
+  	 */
   	this.centerModel = function() {
-    	if (geometry){
-      		scope.updateMetadata();
-      
-      		var m = new THREE.Matrix4();
-      		m.makeTranslation(-geometry.center.x, -geometry.center.y, -geometry.boundingBox.min.z);
-      		geometry.applyMatrix(m);
-
-      		scope.updateMetadata();
+  		if(_selectedObject) {
+    		_selectedObject.position.x = 0;
+    		_selectedObject.position.y = 0;
+    		_selectedObject.position.z = 0;
     	}
   	}
   
+  	/**
+  	 * Update all active objects geometry. 
+  	 */
   	this.updateMetadata = function() {
-    	geometry.computeBoundingBox();
-    	geometry.computeBoundingSphere();
-
-	    //console.log(geometry.boundingBox.min);
-	    //console.log(geometry.boundingBox.max);
-
-	    geometry.bounds = new THREE.Vector3(
-	      	geometry.boundingBox.max.x - geometry.boundingBox.min.x,
-	      	geometry.boundingBox.max.y - geometry.boundingBox.min.y,
-	      	geometry.boundingBox.max.z - geometry.boundingBox.min.z
-	    );
-	    //console.log(geometry.bounds);
-	    
-	    geometry.center = new THREE.Vector3(
-		      (geometry.boundingBox.max.x + geometry.boundingBox.min.x)/2,
-		      (geometry.boundingBox.max.y + geometry.boundingBox.min.y)/2,
-		      (geometry.boundingBox.max.z + geometry.boundingBox.min.z)/2
-	    );
-	    //console.log(geometry.center);    
+  		var l = objects.length;
+  		for(var i = 0; i < l; i++) {
+	  		objects[i].geometry.computeBoundingBox();
+	    	objects[i].geometry.computeBoundingSphere();
+	
+		    console.log(geometry.boundingBox.min);
+		    console.log(geometry.boundingBox.max);
+	
+		    objects[i].geometry.bounds = new THREE.Vector3(
+		      	objects[i].geometry.boundingBox.max.x - objects[i].geometry.boundingBox.min.x,
+		      	objects[i].geometry.boundingBox.max.y - objects[i].geometry.boundingBox.min.y,
+		      	objects[i].geometry.boundingBox.max.z - objects[i].geometry.boundingBox.min.z
+		    );
+		    console.log(geometry.bounds);
+		    
+		    objects[i].geometry.center = new THREE.Vector3(
+			      (objects[i].geometry.boundingBox.max.x + objects[i].geometry.boundingBox.min.x)/2,
+			      (objects[i].geometry.boundingBox.max.y + objects[i].geometry.boundingBox.min.y)/2,
+			      (objects[i].geometry.boundingBox.max.z + objects[i].geometry.boundingBox.min.z)/2
+		    );
+		    console.log(geometry.center);
+		    console.log('-----------------------');
+		}
   	}
 
   	this.centerCamera = function() {
@@ -628,7 +633,7 @@ Thingiview = function(containerId) {
 
 
   	function loadObjectGeometry() {
-    	if (scene && geometry) {
+    	if(scene && geometry) {
       		if (objectMaterial == 'wireframe') {
         		// material = new THREE.MeshColorStrokeMaterial(objectColor, 1, 1);
         		material = new THREE.MeshBasicMaterial({ color:objectColor, wireframe:true });
