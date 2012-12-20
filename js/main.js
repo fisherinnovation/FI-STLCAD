@@ -213,6 +213,6 @@ function onViewerClick(e) {
 function loadDefaultModel() {
 	$.getJSON('objects/demo.json', function(data) {
   		activeModel = 'demo.json';
-		thingiview.loadArray(eval(data));
+		thingiview.loadArray('Demo Model', eval(data));
 	});
 }

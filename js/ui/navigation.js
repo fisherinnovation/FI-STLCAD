@@ -50,10 +50,11 @@ Navigation = function(thingiview) {
 	this.onLoadSTLFromListButtonClick = function(e) {
 		var classnames = $(this).attr('class').split(' ');
 		var modelID = classnames[1];
+		var name = $(this).html();
 		
 		$.getJSON('objects/' + filesJSON[modelID], function(data) {
 			activeModel = filesJSON[modelID];
-			thingiview.loadArray(eval(data));
+			thingiview.loadArray(name, eval(data));
 		});
 		
 		$('#file-selector').modal('toggle');

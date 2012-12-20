@@ -199,6 +199,18 @@ PropertiesSidebar = function(thingiverse) {
 	 * @param	objectID: The ID of the model object. 
 	 */
 	this.addModelToDisplayedModelsList = function(objectID) {
+		var old = $('#model-properties .objects-displayed-list').html();
+		var newHTML = '<li><a href="#">' + objectID + '</a></li>';
+		$('#model-properties .objects-displayed-list').html(old + newHTML);
+	}
+	
+	
+	/**
+	 * Removes a model from the list of displayed models.
+	 * 
+	 * @param	objectID: The ID of the model object. 
+	 */
+	this.removeModelFromDisplayedModelsList = function(objectID) {
 		
 	}
 }

@@ -10,6 +10,9 @@ Thingiview = function(containerId) {
   	var object						= null;
   	var objects = [];
   	
+  	var objectName 					= null;
+  	var objectsNames = [];
+  	
   	var plane						= null;
   	var controls					= null;
   	var ambientLight				= null;
@@ -529,8 +532,10 @@ Thingiview = function(containerId) {
 	    }
   	}
 
-  	this.loadArray = function(array) {
+  	this.loadArray = function(modelID, array) {
 	    log("Loading JSON STL data...");
+	    
+	    objectName = modelID;
 	    
 	    geometry = new STLGeometry(array);
 	    loadObjectGeometry();
@@ -642,6 +647,10 @@ Thingiview = function(containerId) {
 	
 	      	object = new THREE.Mesh(geometry, material);
 	  		scene.add(object);
+	  		
+	  		// Add object to the list of active objects in the sidebar
+	  		_propertiesSidebar.addModelToDisplayedModelsList(objectName);
+	  		objectsNames.push(objectName);
 	  		
 	  		// Add axis to the object
 	  		addObjectAxis(object, 100);
