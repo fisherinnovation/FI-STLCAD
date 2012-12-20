@@ -280,6 +280,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			_selectedObject.material.color.setHex(0xFF9999);
 			
 			// Update the properties display with the new position and scale vector.
+			propertiesSidebar.enableObjectControls();
 			propertiesSidebar.updateModelPositionProperties(_selectedObject.position.x, _selectedObject.position.y, _selectedObject.position.z);
 			propertiesSidebar.updateModelScaleProperties(_selectedObject.scale.x, _selectedObject.scale.y, _selectedObject.scale.z);
 			propertiesSidebar.updateModelRotationProperties(_selectedObject.rotation.x, _selectedObject.rotation.y, _selectedObject.rotation.z);
@@ -293,6 +294,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 				objects[i].material.color.setHex(thingiview.getObjectColor());
 			}
 			
+			propertiesSidebar.disableObjectControls();
 			propertiesSidebar.updateModelPositionProperties('', '', '');
 			propertiesSidebar.updateModelScaleProperties('', '', '');
 			propertiesSidebar.updateModelRotationProperties('', '', '');

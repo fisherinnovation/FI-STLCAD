@@ -246,7 +246,7 @@ Thingiview = function(containerId) {
 	    
 	    // Properties Sidebar
   		_propertiesSidebar = new PropertiesSidebar(this);
-	   	//_propertiesSidebar.disableObjectControls();
+	   	_propertiesSidebar.disableObjectControls();
 	    
 	    // Controls
 	    controls = new THREE.ModelControls(this, camera, renderer.domElement, _propertiesSidebar);

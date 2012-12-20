@@ -124,7 +124,17 @@ PropertiesSidebar = function(thingiverse) {
      * Enables the object controls.
      */
     this.enableObjectControls = function() {
+    	$('#model-properties .x-val').attr("disabled", false);
+    	$('#model-properties .y-val').attr("disabled", false);
+    	$('#model-properties .x-val').attr("disabled", false);
     	
+    	$('#model-properties .x-scale').attr("disabled", false);
+    	$('#model-properties .y-scale').attr("disabled", false);
+    	$('#model-properties .z-scale').attr("disabled", false);
+    	
+    	$('#model-properties .x-rotation').attr("disabled", false);
+    	$('#model-properties .y-rotation').attr("disabled", false);
+    	$('#model-properties .z-rotation').attr("disabled", false);
     }
     
     
@@ -132,7 +142,17 @@ PropertiesSidebar = function(thingiverse) {
      * Disables the object controls.
      */
     this.disableObjectControls = function() {
-    	$('#model-properties .x-val').addClass('disabled');
+    	$('#model-properties .x-val').attr("disabled", true);
+    	$('#model-properties .y-val').attr("disabled", true);
+    	$('#model-properties .x-val').attr("disabled", true);
+    	
+    	$('#model-properties .x-scale').attr("disabled", true);
+    	$('#model-properties .y-scale').attr("disabled", true);
+    	$('#model-properties .z-scale').attr("disabled", true);
+    	
+    	$('#model-properties .x-rotation').attr("disabled", true);
+    	$('#model-properties .y-rotation').attr("disabled", true);
+    	$('#model-properties .z-rotation').attr("disabled", true);
     }
     
     
