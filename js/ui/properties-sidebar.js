@@ -145,8 +145,13 @@ PropertiesSidebar = function(thingiverse) {
 	 */
 	this.updateModelPositionProperties = function(x, y, z) {
 		$('#model-properties .x-val').val(x);
+		$('#model-properties .x-val').attr('value', x);
+		
 		$('#model-properties .y-val').val(y);
+		$('#model-properties .x-val').attr('value', y);
+		
 		$('#model-properties .z-val').val(z);
+		$('#model-properties .x-val').attr('value', z);
 	}
 	
 	
@@ -159,8 +164,13 @@ PropertiesSidebar = function(thingiverse) {
 	 */
 	this.updateModelScaleProperties = function(x, y, z) {
 		$('#model-properties .x-scale').val(x);
+		$('#model-properties .x-scale').attr('value', z);
+		
 		$('#model-properties .y-scale').val(y);
+		$('#model-properties .x-scale').attr('value', z);
+		
 		$('#model-properties .z-scale').val(z);
+		$('#model-properties .x-scale').attr('value', z);
 	}
 	
 	
@@ -173,8 +183,13 @@ PropertiesSidebar = function(thingiverse) {
 	 */
 	this.updateModelRotationProperties = function(x, y, z) {
 		$('#model-properties .x-rotation').val(x);
+		$('#model-properties .x-rotation').attr('value', z);
+		
 		$('#model-properties .y-rotation').val(y);
+		$('#model-properties .x-rotation').attr('value', z);
+		
 		$('#model-properties .z-rotation').val(z);
+		$('#model-properties .x-rotation').attr('value', z);
 	}
 	
 	
