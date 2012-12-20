@@ -115,11 +115,12 @@ Thingiview = function(containerId) {
 	 * Levels an object on the build platform (aka. the plane). 
 	 */
 	this.levelObject = function() {
-		// Loop over all the active objects
-		for(var i = 0; i < objects.length; i++) {
-			var obj = objects[i];
-			//obj.position.z = 0; // Reposition on the Z axis
-			obj.boundingBox.min.z = 0;
+		if(_selectedObject) {
+			//this.updateMetadata();
+			//console.log(_selectedObject.geometry.boundingbox.min)
+			//console.log(_selectedObject.geometry.boundingbox);
+			
+			_selectedObject.position.z = 0;
 		}
 	}
 	
@@ -470,7 +471,19 @@ Thingiview = function(containerId) {
   	 * Centers a selected object on the build platform. 
   	 */
   	this.centerModel = function() {
-  		if(_selectedObject) {
+  		/*
+  		if(_selectedObject.geometry) {
+      		scope.updateMetadata();
+      
+      		var m = new THREE.Matrix4();
+      		m.makeTranslation(-_selectedObject.geometry.center.x, -_selectedObject.geometry.center.y, -_selectedObject.geometry.boundingBox.min.z);
+      		_selectedObject.geometry.applyMatrix(m);
+
+      		scope.updateMetadata();
+    	}
+    	*/
+    	
+    	if(_selectedObject) {
     		_selectedObject.position.x = 0;
     		_selectedObject.position.y = 0;
     		_selectedObject.position.z = 0;
@@ -481,29 +494,44 @@ Thingiview = function(containerId) {
   	 * Update all active objects geometry. 
   	 */
   	this.updateMetadata = function() {
+  		/*
   		var l = objects.length;
   		for(var i = 0; i < l; i++) {
 	  		objects[i].geometry.computeBoundingBox();
 	    	objects[i].geometry.computeBoundingSphere();
 	
-		    console.log(geometry.boundingBox.min);
-		    console.log(geometry.boundingBox.max);
+		    //console.log(objects[i].geometry.boundingBox.min);
+		    //console.log(objects[i].geometry.boundingBox.max);
 	
 		    objects[i].geometry.bounds = new THREE.Vector3(
 		      	objects[i].geometry.boundingBox.max.x - objects[i].geometry.boundingBox.min.x,
 		      	objects[i].geometry.boundingBox.max.y - objects[i].geometry.boundingBox.min.y,
 		      	objects[i].geometry.boundingBox.max.z - objects[i].geometry.boundingBox.min.z
 		    );
-		    console.log(geometry.bounds);
+		    //console.log(objects[i].geometry.bounds);
 		    
 		    objects[i].geometry.center = new THREE.Vector3(
 			      (objects[i].geometry.boundingBox.max.x + objects[i].geometry.boundingBox.min.x)/2,
 			      (objects[i].geometry.boundingBox.max.y + objects[i].geometry.boundingBox.min.y)/2,
 			      (objects[i].geometry.boundingBox.max.z + objects[i].geometry.boundingBox.min.z)/2
 		    );
-		    console.log(geometry.center);
-		    console.log('-----------------------');
+		   	//console.log(objects[i].geometry.center);
+		    //console.log('-----------------------');
 		}
+		*/
+		
+		_selectedObject.geometry.computeBoundingBox();
+    	_selectedObject.geometry.computeBoundingSphere();
+		_selectedObject.geometry.bounds = new THREE.Vector3(
+	      	_selectedObject.geometry.boundingBox.max.x - _selectedObject.geometry.boundingBox.min.x,
+	      	_selectedObject.geometry.boundingBox.max.y - _selectedObject.geometry.boundingBox.min.y,
+	      	_selectedObject.geometry.boundingBox.max.z - _selectedObject.geometry.boundingBox.min.z
+	    );
+	    _selectedObject.geometry.center = new THREE.Vector3(
+		      (_selectedObject.geometry.boundingBox.max.x + _selectedObject.geometry.boundingBox.min.x) / 2,
+		      (_selectedObject.geometry.boundingBox.max.y + _selectedObject.geometry.boundingBox.min.y) / 2,
+		      (_selectedObject.geometry.boundingBox.max.z + _selectedObject.geometry.boundingBox.min.z) / 2
+	    );
   	}
 
   	this.centerCamera = function() {
@@ -651,7 +679,7 @@ Thingiview = function(containerId) {
 	      	}
 	
 	      	object = new THREE.Mesh(geometry, material);
-	  		scene.add(object);
+	      	scene.add(object);
 	  		
 	  		// Add object to the list of active objects in the sidebar
 	  		_propertiesSidebar.addModelToDisplayedModelsList(objectName);
