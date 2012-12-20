@@ -83,7 +83,7 @@ $(function() {
 			          if(currentValue != newValue){
 			            	$(this).val(newValue).trigger('change');
 			          }
-		        });
+				});
 	
 	    	});
     	}

@@ -54,7 +54,12 @@ body {
 }
 #model-properties label {
 	display:inline-block;
-	margin-right:30px;
+	margin-right:10px;
+	font-size:10px;
+}
+#model-properties input {
+	font-size:10px;
+	width:85%;
 }
 
 /*
