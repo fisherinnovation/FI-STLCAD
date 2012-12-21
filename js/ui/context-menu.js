@@ -19,7 +19,7 @@ ContextMenu = function(thingiview) {
 	    $("#context-menu").fadeIn(100);
 	    
 	    if(!inited) {
-	    	$('#context-menu .delete').bind('click', _this.onContextDeleteClick);
+	    	$('#context-menu .delete').bind('click', onContextDeleteClick);
 	    	$('#context-menu .levelonplatform').bind('click', onContextLevelOnPlatformClick);
 	    	$('#context-menu .centeronplatform').bind('click', onContextCenterOnPlatformClick);
 	    	
@@ -48,22 +48,16 @@ ContextMenu = function(thingiview) {
 	/**
 	 * 
 	 */
-	function onContextLevelOnPlatformClick(e) {
-		thingiview.levelObject();
-	}
+	function onContextLevelOnPlatformClick(e) { thingiview.levelObject(); }
 	
 	
 	/**
 	 * 
 	 */
-	function onContextCenterOnPlatformClick(e) {
-		thingiview.centerModel();
-	}
+	function onContextCenterOnPlatformClick(e) { thingiview.centerModel(); }
 	
 	/**
 	 * 
 	 */
-	function onContextDeleteClick(e) {
-		thingiview.removeSelectedObject();
-	}
+	function onContextDeleteClick(e) { thingiview.removeSelectedObject(); }
 }
