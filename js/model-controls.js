@@ -26,13 +26,6 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	this.dynamicDampingFactor = 0.2;
 	this.minDistance = 0;
 	this.maxDistance = Infinity;
-	
-	// Keyboard interaction
-	//this.keys = [ 
-	//				65 /*A*/, 
-	//				83 /*S*/, 
-	//				68 /*D*/ 
-	//			];
 
 	// Internals
 	this.target = new THREE.Vector3();
@@ -117,25 +110,24 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	
 	
 	this.rotateCamera = function () {
-		var angle = Math.acos( _rotateStart.dot( _rotateEnd ) / _rotateStart.length() / _rotateEnd.length() );
-		if ( angle ) {
-			var axis = ( new THREE.Vector3() ).cross( _rotateStart, _rotateEnd ).normalize(), quaternion = new THREE.Quaternion();
+		var angle = Math.acos(_rotateStart.dot(_rotateEnd) / _rotateStart.length() / _rotateEnd.length());
+		if(angle) {
+			var axis = (new THREE.Vector3()).cross(_rotateStart, _rotateEnd).normalize(), quaternion = new THREE.Quaternion();
 			
 			angle *= _this.rotateSpeed;
 
-			quaternion.setFromAxisAngle( axis, -angle );
-			quaternion.multiplyVector3( _eye );
-			quaternion.multiplyVector3( _this.object.up );
-			quaternion.multiplyVector3( _rotateEnd );
+			quaternion.setFromAxisAngle(axis, -angle);
+			quaternion.multiplyVector3(_eye);
+			quaternion.multiplyVector3(_this.object.up);
+			quaternion.multiplyVector3(_rotateEnd);
 
-			if ( _this.staticMoving ) {
-				_rotateStart.copy( _rotateEnd );
+			if (_this.staticMoving) {
+				_rotateStart.copy(_rotateEnd);
 			} else {
-				quaternion.setFromAxisAngle( axis, angle * ( _this.dynamicDampingFactor - 1.0 ) );
-				quaternion.multiplyVector3( _rotateStart );
+				quaternion.setFromAxisAngle(axis, angle * (_this.dynamicDampingFactor - 1.0));
+				quaternion.multiplyVector3(_rotateStart);
 			}
 		}
-
 	};
 
 	this.zoomCamera = function () {
