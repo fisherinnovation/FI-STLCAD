@@ -51,12 +51,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	var _selectedObject; 						// The selected object
 	var controls = thingiview.getControls();	// Refernce to the controls
 	
-	var _rotateObject = false;
-	var _keyPressed = false,
-	_state = STATE.NONE,
+	var _keyPressed = -1;
+	var _state = STATE.NONE;
 
-	_eye = new THREE.Vector3(),
-
+	var _eye = new THREE.Vector3(),
 	_rotateStart = new THREE.Vector3(),
 	_rotateEnd = new THREE.Vector3(),
 	_zoomStart = new THREE.Vector2(),
@@ -67,7 +65,12 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	// Events
 	var changeEvent = { type: 'change' };
 
-	// Methods
+	/**
+	 * Returns the current key pressed. 
+	 * -1 if nothing pressed.
+	 */
+	this.getKeypressed = function() { return _keyPressed; }
+	
 	this.handleResize = function () {
 		this.screen.width = window.innerWidth;
 		this.screen.height = window.innerHeight;
@@ -149,6 +152,8 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	};
 
 	this.panCamera = function () {
+		if(_keyPressed != 16) return;
+		
 		var mouseChange = _panEnd.clone().subSelf( _panStart );
 		if ( mouseChange.lengthSq() ) {
 			mouseChange.multiplyScalar( _eye.length() * _this.panSpeed );
@@ -182,71 +187,37 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	this.update = function () {
 		_eye.copy( _this.object.position ).subSelf( _this.target );
 
-		if ( !_this.noRotate ) {
+		if(!_this.noRotate) {
 			_this.rotateCamera();
 		}
 
-		if ( !_this.noZoom ) {
+		if( !_this.noZoom) {
 			_this.zoomCamera();
 		}
 
-		if ( !_this.noPan ) {
+		if(!_this.noPan) {
 			_this.panCamera();
 		}
 
-		_this.object.position.add( _this.target, _eye );
+		_this.object.position.add(_this.target, _eye);
 		_this.checkDistances();
-		_this.object.lookAt( _this.target );
+		_this.object.lookAt(_this.target);
 
-		if ( lastPosition.distanceToSquared( _this.object.position ) > 0 ) {
-			_this.dispatchEvent( changeEvent );
-			lastPosition.copy( _this.object.position );
+		if(lastPosition.distanceToSquared(_this.object.position) > 0) {
+			_this.dispatchEvent(changeEvent);
+			lastPosition.copy(_this.object.position);
 		}
 	};
 
-	// Listeners
+	/**
+	 * 
+	 */
 	function keydown(event) {
-		//if (! _this.enabled) return;
-		//event.preventDefault();
-
-		var key = event.keyCode;
-
-		//console.log('Key Down: ' + key);
-
-		// SHIFT key
-		if(key == '16') {
-			_rotateObject = true;
-		}
-
-		/*
-		if(_state !== STATE.NONE) {
-			return;
-		} else if (key === _this.keys[ STATE.ROTATE ] && !_this.noRotate ) {
-			_state = STATE.ROTATE;
-		} else if (key === _this.keys[ STATE.ZOOM ] && !_this.noZoom ) {
-			_state = STATE.ZOOM;
-		} else if (key === _this.keys[ STATE.PAN ] && !_this.noPan ) {
-			_state = STATE.PAN;
-		}
-		*/
-
-		if (_state == STATE.NONE) {
-			_keyPressed = true;
-		} else {
-			_keyPressed = false;
-		}
+		_keyPressed = event.keyCode;
 	}
 
 	function keyup( event ) {
-		//console.log('Key Up: ' + event.keyCode);
-		
-		//if ( ! _this.enabled ) return;
-		
-		_rotateObject = false;
-		
-		if ( _state !== STATE.NONE ) {
-			_state = STATE.NONE;
-		}
+		_keyPressed = -1;
 	}
 
 	function mousedown(event) {
@@ -331,12 +302,12 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		// Check if an object was selected prior to mouse move.
 		if(SELECTED) {
 			// Check if we are to rotate the object or move it.
-			if(_rotateObject) {
+			//if(_rotateObject) {
 				// Check for rotation direction.
-				var xAxis = new THREE.Vector3(1,0,0);
-				thingiview.rotateObjectOnAxis(SELECTED, xAxis, Math.PI / 180)
-				return;
-			} else {
+			//	var xAxis = new THREE.Vector3(1,0,0);
+			//	thingiview.rotateObjectOnAxis(SELECTED, xAxis, Math.PI / 180)
+			//	return;
+			//} else {
 				var intersects = ray.intersectObject(plane);
 				SELECTED.position.copy(intersects[0].point.subSelf(offset));
 				
@@ -346,7 +317,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 				propertiesSidebar.updateModelRotationProperties(SELECTED.rotation.x, SELECTED.rotation.y, SELECTED.rotation.z);
 				
 				return;
-			}
+			//}
 		}
 		
 		// Check for intersections.
@@ -373,13 +344,13 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			//container.style.cursor = 'auto';
 		}
 
-		if ( _keyPressed ) {
+		//if ( _keyPressed ) {
 			//_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
 			//_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
 			//_panStart = _panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
 
-			_keyPressed = false;
-		}
+		//	_keyPressed = false;
+		//}
 		
 		// Scene manipulation
 		if ( _state === STATE.NONE ) {

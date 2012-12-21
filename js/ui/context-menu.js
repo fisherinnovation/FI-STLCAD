@@ -13,7 +13,10 @@ ContextMenu = function(thingiview) {
 	var inited = false;
 	
 	$(document).bind("contextmenu", function(event) { 
-	    event.preventDefault();
+		event.preventDefault();
+	    
+	    // Check if any disabling keys are being pressed.
+	    if(thingiview.getControls().getKeypressed() == 16) return;
 	    
 	    $("#context-menu").css({ top:event.pageY + "px", left:event.pageX + "px" });
 	    $("#context-menu").fadeIn(100);
