@@ -43,7 +43,7 @@
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
 			                  		<li><a href="#" id="nav-new-project">New Project</a></li>
-			                  		<li><a href="#">Open Project</a></li>
+			                  		<li><a href="#project-selector" data-toggle="modal">Open Project</a></li>
 			                  		<li><a href="#">Save Project</a></li>
 			                  		
 			                  		<li class="nav-header">Import Model</li>
@@ -80,6 +80,7 @@
 			                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
 			                  	<ul class="dropdown-menu">
 			                  		<li><a href="https://github.com/fisherinnovation/FI-STLCAD/wiki/How-to-Use-FI-STLCAD" target="_blank">Help Content</a></li>
+			                  		<li><a href="https://github.com/fisherinnovation/FI-STLCAD/issues" target="_blank">Submit a Bug</a></li>
 			                  		<li><a href="https://github.com/fisherinnovation/FI-STLCAD" target="_blank">Project Source (Github)</a></li>
 			                  		<li class="divider"></li>
 			                  		<li><a href="#">STLCAD version 0.0.4 unstable</a></li>
@@ -162,6 +163,18 @@
 	  	</div>
 	</div>
 	
+	<!-- Project Selection Modal -->
+	<div id="project-selector" class="modal hide fade">
+	  	<div class="modal-header">
+	    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    	<h3>Open Project</h3>
+	    	<span class="help-block">Select one of the previously used projects to open.</span>
+	  	</div>
+	  	<div class="modal-body">
+	  		<ul id="project-list" class="nav nav-tabs nav-stacked navbar-inverse"></ul>
+	  	</div>
+	</div>
+	
 	<!-- External STL Loading Modal -->
 	<div id="stl-load" class="modal hide fade">
 	  	<div class="modal-header">
@@ -185,6 +198,7 @@
 	  	</div>
 	</div>
 	
+	<!-- GCode Export Options Modal -->
 	<div id="gcode-options" class="modal hide fade">
 	  	<div class="modal-header">
 	    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
