@@ -43,7 +43,7 @@ body {
 }
 
 #model-properties {
-	width:300px;
+	width:200px;
 	height:100%;
 	position:absolute;
 	right:0px;
@@ -59,7 +59,7 @@ body {
 }
 #model-properties input {
 	font-size:10px;
-	width:85%;
+	width:75%;
 }
 
 /*
