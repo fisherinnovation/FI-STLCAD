@@ -58,11 +58,14 @@ Navigation = function(thingiview) {
 		$.getJSON('objects/' + filesJSON[modelID], function(data) {
 			activeModel = filesJSON[modelID];
 			thingiview.loadArray(name, eval(data));
+		}).error(function() { 
+			// Called when JSON failed to load.
+			console.log('WARNING: Failure to load object JSON!');
 		});
 		
 		$('#file-selector').modal('toggle');
 		
-		_navigation.loadFileList();
+		_navigation.loadFileList(); // Update the file listings.
 	}
 	
 	

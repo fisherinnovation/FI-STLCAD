@@ -422,7 +422,35 @@ Thingiview = function(containerId) {
   	}
 
   	
-  	this.setCameraView = function(dir) {  }
+  	this.setCameraView = function(dir) {  
+  		cameraView = dir;
+		
+		
+		console.log(camera.rotation)
+		camera.rotation = new THREE.Vector3(0, 0, 0);
+		
+		if (dir == 'top') {
+	      	camera.position.x = 0;
+	      	camera.position.y = 0;
+	      	camera.position.z = 100;
+	    } else if (dir == 'side') {
+	      	camera.position.x = 0;
+	      	camera.position.y = 100;
+	      	camera.position.z = 0;
+	    } else if (dir == 'bottom') {
+	    	camera.position.x = 0;
+	      	camera.position.y = 0;
+	      	camera.position.z = -100;
+	    } else {
+	    	camera.position.x = 0;
+	      	camera.position.y = -100;
+	      	camera.position.z = 100;
+	    }
+	    
+	    camera.lookAt(new THREE.Vector3(0, 0, 0));
+	    camera.updateProjectionMatrix();
+  	}
+  	
   	this.setCameraZoom = function(factor) {  }
 
   	this.getObjectMaterial = function() { return objectMaterial; }
@@ -535,14 +563,14 @@ Thingiview = function(containerId) {
   	}
 
   	this.centerCamera = function() {
-	    if (geometry) { 
+	    if(geometry) { 
 	      	scope.updateMetadata();
 	      
 	      	// set camera position outside and above our object.
 	      	distance = geometry.boundingSphere.radius / Math.sin((camera.fov/2) * (Math.PI / 180));
-	      	camera.position.x = 0;
-	      	camera.position.y = -distance;
-	      	camera.position.z = distance;
+	      	//camera.position.x = 0;
+	      	//camera.position.y = -distance;
+	      	//camera.position.z = distance;
 	
 	      	//todo: how to control where it looks at!
 	      	//camera.lookAt(new THREE.Vector3(0, 0, geometry.center.z));
@@ -558,10 +586,9 @@ Thingiview = function(containerId) {
 	     	pointLight.y = geometry.center.y;
 	      	pointLight.z = geometry.boundingBox.max.z * 2;
 	    } else {
-	      	// set to any valid position so it doesn't fail before geometry is available
-	      	camera.position.y = -70;
-	      	camera.position.z = 70;
-			//camera.target.z = 0;
+	      	// Initial camera position on application start.
+	      	camera.position.y = -100;
+	      	camera.position.z = 100;
 	    }
   	}
 
