@@ -38,7 +38,10 @@ Navigation = function(thingiview) {
 		  	
 		  	$('#file-list').html(html);
 		  	$('#file-list .load').bind('click', _this.onLoadSTLFromListButtonClick);
-		  	//$('#file-list .delete').bind('click', _this.onNavSTLDeleteButtonClick);
+		}).error(function() { 
+			// Failed to load object archive JSON. Alert the user
+			console.log('WARNING: Failure to load object archive JSON!');
+			$('#file-list').html('<p>Failed to load object archive JSON...');
 		});
 	}
 	
