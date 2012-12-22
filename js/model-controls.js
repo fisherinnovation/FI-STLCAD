@@ -9,51 +9,46 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	
 	STATE = { NONE : -1, ROTATE : 0, ZOOM : 1, PAN : 2 };
 
-	this.object = object;
-	this.domElement = ( domElement !== undefined ) ? domElement : document;
+	this.object					= object;
+	this.domElement				= ( domElement !== undefined ) ? domElement : document;
 
 	// API
-	this.enabled = true;
-	this.screen = { width: 0, height: 0, offsetLeft: 0, offsetTop: 0 };
-	this.radius = ( this.screen.width + this.screen.height ) / 4;
-	this.rotateSpeed = 1.0;
-	this.zoomSpeed = 1.2;
-	this.panSpeed = 0.3;
-	this.noRotate = false;
-	this.noZoom = false;
-	this.noPan = false;
-	this.staticMoving = false;
-	this.dynamicDampingFactor = 0.2;
-	this.minDistance = 0;
-	this.maxDistance = Infinity;
+	this.enabled				= true;
+	this.screen					= { width: 0, height: 0, offsetLeft: 0, offsetTop: 0 };
+	this.radius					= ( this.screen.width + this.screen.height ) / 4;
+	this.rotateSpeed			= 1.0;
+	this.zoomSpeed				= 1.2;
+	this.panSpeed				= 0.3;
+	this.noRotate				= false;
+	this.noZoom					= false;
+	this.noPan					= false;
+	this.staticMoving			= false;
+	this.dynamicDampingFactor	= 0.2;
+	this.minDistance			= 0;
+	this.maxDistance			= Infinity;
+	this.target					= new THREE.Vector3();
 
-	// Internals
-	this.target = new THREE.Vector3();
-
-	var lastPosition = new THREE.Vector3();
+	var lastPosition		= new THREE.Vector3();
+	var projector			= thingiview.getProjector();
+	var camera				= thingiview.getCamera();
+	var objects				= thingiview.getObjects();
+	var plane				= thingiview.getPlane();
+	var mouse				= new THREE.Vector2();
+	var offset				= new THREE.Vector3();
 	
-	var projector = thingiview.getProjector();
-	var camera = thingiview.getCamera();
-	var objects = thingiview.getObjects();
-	var plane = thingiview.getPlane();
-	
-	var mouse = new THREE.Vector2();
-	var offset = new THREE.Vector3();
-	
-	var INTERSECTED, SELECTED;
-	var _selectedObject; 						// The selected object
-	var controls = thingiview.getControls();	// Refernce to the controls
-	
-	var _keyPressed = -1;
-	var _state = STATE.NONE;
-
-	var _eye = new THREE.Vector3(),
-	_rotateStart = new THREE.Vector3(),
-	_rotateEnd = new THREE.Vector3(),
-	_zoomStart = new THREE.Vector2(),
-	_zoomEnd = new THREE.Vector2(),
-	_panStart = new THREE.Vector2(),
-	_panEnd = new THREE.Vector2();
+	var INTERSECTED
+	var SELECTED;
+	var _selectedObject; 								// The selected object
+	var controls			= thingiview.getControls();	// Refernce to the controls
+	var _keyPressed			= -1;
+	var _state				= STATE.NONE;
+	var _eye 				= new THREE.Vector3();
+	var _rotateStart 		= new THREE.Vector3();
+	var _rotateEnd 			= new THREE.Vector3();
+	var _zoomStart 			= new THREE.Vector2();
+	var _zoomEnd 			= new THREE.Vector2();
+	var _panStart 			= new THREE.Vector2();
+	var _panEnd 			= new THREE.Vector2();
 
 	// Events
 	var changeEvent = { type: 'change' };
@@ -64,6 +59,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	 */
 	this.getKeypressed = function() { return _keyPressed; }
 	
+	
+	/**
+	 * 
+	 */
 	this.handleResize = function () {
 		this.screen.width = window.innerWidth;
 		this.screen.height = window.innerHeight;
@@ -71,13 +70,21 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		this.screen.offsetTop = 0;
 		this.radius = ( this.screen.width + this.screen.height ) / 4;
 	};
-
+	
+	
+	/**
+	 * 
+	 */
 	this.handleEvent = function ( event ) {
 		if ( typeof this[ event.type ] == 'function' ) {
 			this[ event.type ]( event );
 		}
 	};
 
+	
+	/**
+	 * 
+	 */
 	this.getMouseOnScreen = function ( clientX, clientY ) {
 		return new THREE.Vector2(
 			( clientX - _this.screen.offsetLeft ) / _this.radius * 0.5,
@@ -85,6 +92,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		);
 	};
 
+	
+	/**
+	 * 
+	 */
 	this.getMouseProjectionOnBall = function ( clientX, clientY ) {
 		var mouseOnBall = new THREE.Vector3(
 			( clientX - _this.screen.width * 0.5 - _this.screen.offsetLeft ) / _this.radius,
@@ -109,6 +120,9 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 	};
 	
 	
+	/**
+	 * 
+	 */
 	this.rotateCamera = function () {
 		var angle = Math.acos(_rotateStart.dot(_rotateEnd) / _rotateStart.length() / _rotateEnd.length());
 		if(angle) {
@@ -130,6 +144,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		}
 	};
 
+	
+	/**
+	 * 
+	 */
 	this.zoomCamera = function () {
 		var factor = 1.0 + ( _zoomEnd.y - _zoomStart.y ) * _this.zoomSpeed;
 		if ( factor !== 1.0 && factor > 0.0 ) {
@@ -143,6 +161,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		}
 	};
 
+	
+	/**
+	 * 
+	 */
 	this.panCamera = function () {
 		if(_keyPressed != 16) return;
 		
@@ -164,6 +186,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		}
 	};
 
+	
+	/**
+	 * 
+	 */
 	this.checkDistances = function () {
 		if ( !_this.noZoom || !_this.noPan ) {
 			if ( _this.object.position.lengthSq() > _this.maxDistance * _this.maxDistance ) {
@@ -176,21 +202,17 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		}
 	};
 
+	
+	/**
+	 * 
+	 */
 	this.update = function () {
 		_eye.copy( _this.object.position ).subSelf( _this.target );
 
-		if(!_this.noRotate) {
-			_this.rotateCamera();
-		}
-
-		if( !_this.noZoom) {
-			_this.zoomCamera();
-		}
-
-		if(!_this.noPan) {
-			_this.panCamera();
-		}
-
+		if(!_this.noRotate) _this.rotateCamera();
+		if( !_this.noZoom) _this.zoomCamera();
+		if(!_this.noPan) _this.panCamera();
+		
 		_this.object.position.add(_this.target, _eye);
 		_this.checkDistances();
 		_this.object.lookAt(_this.target);
@@ -200,18 +222,33 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			lastPosition.copy(_this.object.position);
 		}
 	};
+	
 
 	/**
+	 * Called on key press down.
 	 * 
+	 * @param	event:
 	 */
 	function keydown(event) {
-		_keyPressed = event.keyCode;
+		_keyPressed = event.keyCode; // Logged the keycode of the pressed key.
 	}
 
-	function keyup( event ) {
-		_keyPressed = -1;
+
+	/**
+	 * Called on key press up.
+	 * 
+	 * @param	event:
+	 */
+	function keyup(event) {
+		_keyPressed = -1; // Reset the logged key value.
 	}
 
+
+	/**
+	 * Called on mouse button down.
+	 * 
+	 * @param	event:
+	 */
 	function mousedown(event) {
 		if (!_this.enabled) return;
 
@@ -284,7 +321,13 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		}
 	}
 
-	function mousemove( event ) {
+	
+	/**
+	 * Called on mouse movement.
+	 * 
+	 * @param	event:
+	 */
+	function mousemove(event) {
 		if (!_this.enabled ) return;
 		
 		var preX = mouse.x;
@@ -300,7 +343,6 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 
 		// Check if an object was selected prior to mouse move.
 		if(SELECTED && _keyPressed != -1) {
-			console.log(_keyPressed);
 			var intersects = ray.intersectObject(plane);
 			SELECTED.position.copy(intersects[0].point.subSelf(offset));
 			
@@ -323,23 +365,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 				plane.position.copy(INTERSECTED.position);
 				plane.lookAt(camera.position);
 			}
-
-			//container.style.cursor = 'pointer';
-
 		} else {
-			//if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
 			INTERSECTED = null;
-			//container.style.cursor = 'auto';
 		}
 
-		//if ( _keyPressed ) {
-			//_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
-			//_zoomStart = _zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
-			//_panStart = _panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
-
-		//	_keyPressed = false;
-		//}
-		
 		// Scene manipulation
 		if ( _state === STATE.NONE ) {
 			return;
@@ -352,9 +381,13 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		}
 	}
 
-	function mouseup( event ) {
-		//if ( ! _this.enabled ) return;
-		
+	
+	/**
+	 * Called on mouse button up.
+	 * 
+	 * @param	event:
+	 */
+	function mouseup(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -363,53 +396,38 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			SELECTED = null;
 		}
 
-		_state = STATE.NONE; // Reset the state.
+		_state = STATE.NONE;
 	}
-
-	function mousewheel( event ) {
+	
+	
+	/**
+	 * Called on mouse wheel movement.
+	 *  
+ 	 * @param 	event:
+	 */
+	function mousewheel(event) {
 		if ( ! _this.enabled ) return;
 
 		event.preventDefault();
 		event.stopPropagation();
 
-		/*
-		var delta = 0;
-
-		if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
-
-			delta = event.wheelDelta / 40;
-
-		} else if ( event.detail ) { // Firefox
-
-			delta = - event.detail / 3;
-
-		}
-		*/
-
     	var rolled = 0;
 
+		// Firefox check
     	if (event.wheelDelta === undefined) {
-	      	// Firefox
-	      	// The measurement units of the detail and wheelDelta properties are different.
 	      	rolled = -40 * event.detail;
     	} else {
       		rolled = event.wheelDelta;
     	}
 
    	 	if (rolled > 0) {
-      		// up
-      		//scope.setCameraZoom(+10);
-      		_zoomStart.y += 1;
+      		_zoomStart.y += 1; // Up
     	} else {
-      		// down
-      		//scope.setCameraZoom(-10);
-    	  	_zoomStart.y -= 1;
+      		_zoomStart.y -= 1; // Down
     	}
 	}
 	
 	
-	
-	//this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 	this.domElement.addEventListener( 'mousemove', mousemove, false );
 	this.domElement.addEventListener( 'mousedown', mousedown, false );
 	this.domElement.addEventListener( 'mouseup', mouseup, false );
