@@ -1,13 +1,14 @@
-/**
- * @author Eberhard Graether / http://egraether.com/
- */
-
 THREE.ModelControls = function (thingiview, object, domElement, propertiesSidebar) {
 	THREE.EventTarget.call(this);
 
 	var _this = this,
 	
-	STATE = { NONE : -1, ROTATE : 0, ZOOM : 1, PAN : 2 };
+	STATE = { 
+				NONE:-1,
+				ROTATE:0,
+				ZOOM:1,
+				PAN:2
+			};
 
 	this.object					= object;
 	this.domElement				= ( domElement !== undefined ) ? domElement : document;
