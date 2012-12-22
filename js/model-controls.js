@@ -229,6 +229,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			
 			SELECTED = intersects[0].object;
 			_selectedObject = intersects[0].object;
+			thingiview.setSelectedObject(_selectedObject);
 			
 			// Pass the selected object to the main scene class.
 			thingiview.setSelectedObject(_selectedObject);
@@ -251,6 +252,8 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			var intersects = ray.intersectObject(plane);
 			offset.copy(intersects[0].point).subSelf(plane.position);
 		} else {
+			thingiview.setSelectedObject(null);
+			
 			// Nothing was selected, clear all previous selections.
 			var l = objects.length;
 			for(var i = 0; i < l; i++) {
@@ -266,6 +269,10 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		// Scene manipulation
 		if(_state === STATE.NONE) {
 			_state = event.button;
+			
+			if(_state == STATE.ROTATE && _keyPressed == '16') {
+				_state = STATE.PAN;
+			}
 			
 			if (_state === STATE.ROTATE && !_this.noRotate) {
 				_rotateStart = _rotateEnd = _this.getMouseProjectionOnBall(event.clientX, event.clientY);
@@ -292,24 +299,17 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 		var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
 
 		// Check if an object was selected prior to mouse move.
-		if(SELECTED) {
-			// Check if we are to rotate the object or move it.
-			//if(_rotateObject) {
-				// Check for rotation direction.
-			//	var xAxis = new THREE.Vector3(1,0,0);
-			//	thingiview.rotateObjectOnAxis(SELECTED, xAxis, Math.PI / 180)
-			//	return;
-			//} else {
-				var intersects = ray.intersectObject(plane);
-				SELECTED.position.copy(intersects[0].point.subSelf(offset));
-				
-				// Update the properties display with the new position vector.
-				propertiesSidebar.updateModelPositionProperties(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
-				propertiesSidebar.updateModelScaleProperties(SELECTED.scale.x, SELECTED.scale.y, SELECTED.scale.z);
-				propertiesSidebar.updateModelRotationProperties(SELECTED.rotation.x, SELECTED.rotation.y, SELECTED.rotation.z);
-				
-				return;
-			//}
+		if(SELECTED && _keyPressed != -1) {
+			console.log(_keyPressed);
+			var intersects = ray.intersectObject(plane);
+			SELECTED.position.copy(intersects[0].point.subSelf(offset));
+			
+			// Update the properties display with the new position vector.
+			propertiesSidebar.updateModelPositionProperties(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
+			propertiesSidebar.updateModelScaleProperties(SELECTED.scale.x, SELECTED.scale.y, SELECTED.scale.z);
+			propertiesSidebar.updateModelRotationProperties(SELECTED.rotation.x, SELECTED.rotation.y, SELECTED.rotation.z);
+			
+			return;
 		}
 		
 		// Check for intersections.
@@ -319,10 +319,6 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 				if(INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
 
 				INTERSECTED = intersects[0].object;
-				//INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-				
-				// Update the intersected objects color to alert the user
-				//INTERSECTED.material.color.setHex(0xFF9999);
 				
 				plane.position.copy(INTERSECTED.position);
 				plane.lookAt(camera.position);
@@ -351,7 +347,7 @@ THREE.ModelControls = function (thingiview, object, domElement, propertiesSideba
 			_rotateEnd = _this.getMouseProjectionOnBall( event.clientX, event.clientY );
 		} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
 			_zoomEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
-		} else if ( _state === STATE.PAN && !_this.noPan ) {
+		} else if ( _state === STATE.PAN && !_this.noPan && SELECTED == null) {
 			_panEnd = _this.getMouseOnScreen( event.clientX, event.clientY );
 		}
 	}

@@ -112,6 +112,12 @@ Thingiview = function(containerId) {
 	
 	
 	/**
+	 * 
+	 */
+	this.getSelectedObject = function() { return _selectedObject; }
+	
+	
+	/**
 	 * Levels an object on the build platform (aka. the plane). 
 	 */
 	this.levelObject = function() {
